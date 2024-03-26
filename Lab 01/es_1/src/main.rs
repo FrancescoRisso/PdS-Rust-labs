@@ -1,3 +1,5 @@
+use clap::Parser;
+
 const SUBS_I: &str = "àáâäæãåāăąçćčđďèéêëēėęěğǵḧîïíīįìıİłḿñńǹňôöòóœøōõőṕŕřßśšşșťțûüùúūǘůűųẃẍÿýžźż";
 const SUBS_O: &str = "aaaaaaaaaacccddeeeeeeeegghiiiiiiiilmnnnnoooooooooprrsssssttuuuuuuuuuwxyyzzz";
 
@@ -27,11 +29,11 @@ fn slugify(s: &str) -> String {
     }
 
     if wip.ends_with('-') {
-		wip.remove(wip.len()-1);
-		return wip;
-	}
+        wip.remove(wip.len() - 1);
+        return wip;
+    }
 
-	wip
+    wip
 }
 
 #[cfg(test)]
@@ -94,6 +96,32 @@ mod tests {
     }
 }
 
+#[derive(Parser, Debug)]
+struct Args {
+    /// The string to be slugified
+    input_string: String,
+
+    /// Sets how many times the output string should be repeated
+    #[arg(short, long)]
+    repeat: Option<u64>,
+
+    /// Also prints the original string
+    #[arg(short, long)]
+    verbose: bool,
+}
+
 fn main() {
-    slugify("todo");
+    let args = Args::parse();
+
+    let result = slugify(args.input_string.as_str());
+
+    let repeat = args.repeat.unwrap_or(1);
+
+    if args.verbose {
+        println!("Converting '{}' to slug:", args.input_string)
+    }
+
+    for _ in 0..repeat {
+        println!("{}", result);
+    }
 }
