@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 const BSIZE: usize = 20;
 
 pub struct Board {
@@ -9,6 +11,16 @@ pub enum Error {
     Overlap,
     OutOfBounds,
     BoatCount,
+}
+
+impl Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Overlap => write!(f, "Overlap"),
+            Self::OutOfBounds => write!(f, "OutOfBounds"),
+            Self::BoatCount => write!(f, "BoatCount"),
+        }
+    }
 }
 
 pub enum Boat {
