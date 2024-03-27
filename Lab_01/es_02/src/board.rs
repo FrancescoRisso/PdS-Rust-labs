@@ -68,7 +68,7 @@ impl Board {
         let len: usize;
         let horiz: bool;
 
-		let mut res = self;
+        let mut res = self;
 
         match boat {
             Boat::Horizontal(l) => {
@@ -90,21 +90,41 @@ impl Board {
 
         res.boats[len - 1] -= 1;
 
+        let mut border: Vec<(isize, isize)> = Vec::with_capacity(2 * len + 2);
+        let pos: (isize, isize) = (pos.0 as isize, pos.1 as isize);
 
-            if pos_with_delta.0 >= BSIZE || pos_with_delta.1 >= BSIZE {
+        for delta in 0_isize..len as isize {
+            let row = pos.0 + delta * ver_factor - 1;
+            let col = pos.1 + delta * hor_factor - 1;
+
+            if row >= BSIZE as isize || col >= BSIZE as isize {
                 return Err(Error::OutOfBounds);
             }
 
-            if res.data[pos_with_delta.0][pos_with_delta.1] == 1
-                || (horiz && pos.0 != 0 && res.data[pos.0 - 1][pos_with_delta.1] == 1)
-                || (horiz && pos.0 != BSIZE - 1 && res.data[pos.0 + 1][pos_with_delta.1] == 1)
-                || (!horiz && pos.1 != 0 && res.data[pos_with_delta.0][pos.1 - 1] == 1)
-                || (!horiz && pos.1 != BSIZE - 1 && res.data[pos_with_delta.0][pos.1 + 1] == 1)
-            {
+            if res.data[row as usize][col as usize] == 1 {
                 return Err(Error::Overlap);
             }
 
-            res.data[pos_with_delta.0][pos_with_delta.1] = 1;
+            res.data[row as usize][col as usize] = 1;
+
+            border.push((row + hor_factor, col + ver_factor));
+            border.push((row - hor_factor, col - ver_factor));
+        }
+
+        border.push((pos.0 - ver_factor - 1, pos.1 - hor_factor - 1));
+        border.push((
+            pos.0 + ver_factor * (len as isize + ver_factor) - 1,
+            pos.1 + hor_factor * (len as isize + hor_factor) - 1,
+        ));
+
+        for (row, col) in border {
+            if row < 0 || row >= BSIZE as isize || col < 0 || col >= BSIZE as isize {
+                continue;
+            }
+
+            if res.data[row as usize][col as usize] == 1 {
+                return Err(Error::Overlap);
+            }
         }
 
         Ok(res)
