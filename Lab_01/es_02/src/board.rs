@@ -84,15 +84,12 @@ impl Board {
         let hor_factor = if horiz { 1 } else { 0 };
         let ver_factor = 1 - hor_factor;
 
-        if res.boats[len] == 0 {
+        if res.boats[len - 1] == 0 {
             return Err(Error::BoatCount);
         }
 
-        for delta in 0..len {
-            let pos_with_delta = (
-                pos.0 + delta * ver_factor - 1,
-                pos.1 + delta * hor_factor - 1,
-            );
+        res.boats[len - 1] -= 1;
+
 
             if pos_with_delta.0 >= BSIZE || pos_with_delta.1 >= BSIZE {
                 return Err(Error::OutOfBounds);
