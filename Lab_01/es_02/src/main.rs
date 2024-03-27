@@ -1,4 +1,21 @@
-use std::{fs::read_to_string, fs::write};
+use std::{
+    fs::{read_to_string, write},
+    time::SystemTime,
+};
+
+enum Error {
+    Simple(SystemTime),
+    Complex(SystemTime, String),
+}
+
+fn print_error(e: Error) {
+    use Error::*;
+
+    match e {
+        Simple(time) => println!("[{:?}] => Generic error", time),
+        Complex(time, message) => println!("[{:?}] => {}", time, message),
+    }
+}
 
 fn copy_repeat_file(file: &str) {
     match read_to_string(file) {
@@ -18,5 +35,11 @@ fn copy_repeat_file(file: &str) {
 }
 
 fn main() {
-    copy_repeat_file("../test.txt")
+    use Error::*;
+    copy_repeat_file("../test.txt");
+    print_error(Simple(SystemTime::now()));
+    print_error(Complex(
+        SystemTime::now(),
+        "Boh I am testing stuff".to_string(),
+    ));
 }
