@@ -4,7 +4,8 @@ const SUBS_I: &str = "àáâäæãåāăąçćčđďèéêëēėęěğǵḧîï�
 const SUBS_O: &str = "aaaaaaaaaacccddeeeeeeeegghiiiiiiiilmnnnnoooooooooprrsssssttuuuuuuuuuwxyyzzz";
 
 fn conv(c: char) -> char {
-    match SUBS_I.find(c) {
+	let subs_i_as_vec: Vec<char> = SUBS_I.chars().collect();
+    match subs_i_as_vec.iter().position(|&r| r == c) {
         Some(index) => SUBS_O.chars().nth(index).unwrap(),
         None => '-',
     }
