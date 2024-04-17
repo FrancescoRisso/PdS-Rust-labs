@@ -1,14 +1,14 @@
-use std::ops::{Index, IndexMut};
+use std::ops::{Deref, Index, IndexMut};
 
 pub struct CircularBuffer<T>
 where
     T: Default + Copy,
 {
     buf: Vec<T>,
-    head: usize,
-    tail: usize,
-    free: usize,
-    size: usize,
+    pub head: usize,
+    pub tail: usize,
+    pub free: usize,
+    pub size: usize,
 }
 
 impl<T> CircularBuffer<T>
@@ -120,5 +120,19 @@ where
         }
 
         &mut (self.buf[(self.head + index) % self.size])
+    }
+}
+
+impl<T> Deref for CircularBuffer<T>
+where
+    T: Default + Copy,
+{
+    type Target = [T];
+
+    fn deref(&self) -> &Self::Target {
+        if (self.tail < self.head && self.tail != 0) || (self.free == 0 && self.head != 0) {
+            panic!()
+        }
+        &self.buf[self.head..=((self.tail + self.size - 1) % self.size)]
     }
 }

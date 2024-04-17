@@ -142,3 +142,41 @@ fn index_mut() {
     assert_eq!(buf.read(), Some(6));
     assert!(pan.is_err());
 }
+
+#[test]
+fn deref_ok() {
+    let mut buf: CircularBuffer<u32> = CircularBuffer::new(3);
+
+    let _ = buf.write(1);
+    let _ = buf.write(2);
+
+    let slice: &[u32] = &[1, 2];
+    let deref: &[u32] = &buf;
+
+    assert_eq!(deref, slice);
+}
+
+#[test]
+fn deref_borderline() {
+    let mut buf: CircularBuffer<u32> = CircularBuffer::new(2);
+
+    let _ = buf.write(1);
+    let _ = buf.write(2);
+
+    let slice: &[u32] = &[1, 2];
+    let deref: &[u32] = &buf;
+
+    assert_eq!(deref, slice);
+}
+
+#[test]
+#[should_panic]
+fn deref_non_contiguous() {
+    let mut buf: CircularBuffer<u32> = CircularBuffer::new(2);
+
+    let _ = buf.write(1);
+    let _ = buf.write(2);
+    let _ = buf.read();
+    let _ = buf.write(3);
+    let _deref: &[u32] = &buf;
+}
