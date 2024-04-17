@@ -1,30 +1,30 @@
 pub mod solution {
-    use core::f32;
+    use core::f64;
     use std::ops::{Add, AddAssign};
 
     pub struct ComplexNumber {
-        re: f32,
-        im: f32,
+        re: f64,
+        im: f64,
     }
 
     impl ComplexNumber {
-        pub fn new(real: f32, imag: f32) -> Self {
+        pub fn new(real: f64, imag: f64) -> Self {
             ComplexNumber { re: real, im: imag }
         }
 
-        pub fn from_real(real: f32) -> Self {
+        pub fn from_real(real: f64) -> Self {
             Self::new(real, 0.0)
         }
 
-        pub fn real(&self) -> f32 {
+        pub fn real(&self) -> f64 {
             self.re
         }
 
-        pub fn imag(&self) -> f32 {
+        pub fn imag(&self) -> f64 {
             self.im
         }
 
-        pub fn to_tuple(&self) -> (f32, f32) {
+        pub fn to_tuple(&self) -> (f64, f64) {
             (self.real(), self.imag())
         }
     }
@@ -37,10 +37,10 @@ pub mod solution {
         }
     }
 
-    impl Add<f32> for ComplexNumber {
+    impl Add<f64> for ComplexNumber {
         type Output = Self;
 
-        fn add(self, rhs: f32) -> Self::Output {
+        fn add(self, rhs: f64) -> Self::Output {
             self + Self::from_real(rhs)
         }
     }
