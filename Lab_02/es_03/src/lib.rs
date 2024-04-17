@@ -52,7 +52,12 @@ where
         Some(val)
     }
 
-    // pub fn clear(&mut self) {};
+    pub fn clear(&mut self) {
+        self.head = 0;
+        self.tail = 0;
+        self.free = self.size;
+    }
+
     // pub dn size(&self) -> usize;
     // // può essere usata quando il buffer è pieno per forzare una
     // // scrittura riscrivendo l’elemento più vecchio
