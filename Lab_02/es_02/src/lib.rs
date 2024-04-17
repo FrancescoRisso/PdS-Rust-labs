@@ -79,4 +79,10 @@ pub mod solution {
             Self::from_real(0.0)
         }
     }
+
+    impl Into<f64> for ComplexNumber {
+        fn into(self) -> f64 {
+            self.real()
+        }
+    }
 }

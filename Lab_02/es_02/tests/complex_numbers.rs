@@ -92,14 +92,14 @@ pub fn test_default_values() {
     }
 }
 
-// #[test]
-// pub fn test_convert_into_real() {
-//     let a = ComplexNumber::from_real(1.0);
-//     let b: f64 = a.into();
+#[test]
+pub fn test_convert_into_real() {
+    let a = ComplexNumber::from_real(1.0);
+    let b: f64 = a.into();
 
-//     assert_eq!(b, 1.0);
+    assert_eq!(b, 1.0);
 
-// }
+}
 
 // #[test]
 // pub fn test_panic_when_impossible_to_convert_to_real() {
