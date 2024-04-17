@@ -12,3 +12,15 @@ fn write_until_error() {
     assert!(ins2.is_ok());
     assert!(ins3.is_err());
 }
+
+#[test]
+fn read_until_error() {
+    let mut buf: CircularBuffer<u32> = CircularBuffer::new(2);
+
+    let _ = buf.write(1);
+    let _ = buf.write(2);
+
+    assert_eq!(buf.read(), Some(1));
+    assert_eq!(buf.read(), Some(2));
+    assert_eq!(buf.read(), None);
+}

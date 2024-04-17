@@ -1,6 +1,6 @@
 pub struct CircularBuffer<T>
 where
-    T: Default,
+    T: Default + Copy,
 {
     buf: Vec<T>,
     head: usize,
@@ -11,7 +11,7 @@ where
 
 impl<T> CircularBuffer<T>
 where
-    T: Default,
+    T: Default + Copy,
 {
     pub fn new(capacity: usize) -> Self {
         let mut buf: Vec<T> = Vec::with_capacity(capacity);
@@ -22,7 +22,7 @@ where
         CircularBuffer {
             buf: buf,
             head: 0,
-            tail: 1,
+            tail: 0,
             free: capacity,
             size: capacity,
         }
@@ -36,11 +36,22 @@ where
         self.buf[self.tail] = item;
         self.tail = (self.tail + 1) % self.size;
         self.free -= 1;
-		
+
         Ok(())
     }
 
-    // pub fn read(&mut self) -> Option() {};
+    pub fn read(&mut self) -> Option<T> {
+        if self.free == self.size {
+            return None;
+        }
+
+        let val = self.buf[self.head];
+        self.head = (self.head + 1) % self.size;
+        self.free += 1;
+
+        Some(val)
+    }
+
     // pub fn clear(&mut self) {};
     // pub dn size(&self) -> usize;
     // // può essere usata quando il buffer è pieno per forzare una
