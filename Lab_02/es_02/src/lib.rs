@@ -1,5 +1,6 @@
 pub mod solution {
     use core::f32;
+    use std::ops::Add;
 
     pub struct ComplexNumber {
         re: f32,
@@ -21,6 +22,13 @@ pub mod solution {
 
         pub fn imag(&self) -> f32 {
             self.im
+        }
+    }
+
+    impl Add for ComplexNumber {
+        type Output = Self;
+        fn add(self, rhs: Self) -> Self::Output {
+            Self::new(self.real() + rhs.real(), self.imag() + rhs.imag())
         }
     }
 }
