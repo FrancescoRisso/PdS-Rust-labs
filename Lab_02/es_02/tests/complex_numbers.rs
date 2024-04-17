@@ -92,33 +92,39 @@ pub fn test_default_values() {
     }
 }
 
-#[test]
-pub fn test_convert_into_real() {
-    let a = ComplexNumber::from_real(1.0);
-    let b: f64 = a.into();
+// #[test]
+// pub fn test_convert_into_real() {
+//     let a = ComplexNumber::from_real(1.0);
+//     let b: f64 = a.into();
 
-    assert_eq!(b, 1.0);
-
-}
-
-#[test]
-pub fn test_panic_when_impossible_to_convert_to_real() {
-    // we can convert into a real only if imag is 0
-    let a = ComplexNumber::new(1.0, 2.0);
-
-    let result = std::panic::catch_unwind(|| {
-        let _: f64 = a.into();
-    });
-
-    assert!(result.is_err());
-}
+//     assert_eq!(b, 1.0);
+// }
 
 // #[test]
-// pub fn test_try_into_f64() {
-//     // write trait and a test for the Trait TryInto for converting into f64
-//     // the test must check both success and error conditions
-//     assert!(true);
+// pub fn test_panic_when_impossible_to_convert_to_real() {
+//     // we can convert into a real only if imag is 0
+//     let a = ComplexNumber::new(1.0, 2.0);
+
+//     let result = std::panic::catch_unwind(|| {
+//         let _: f64 = a.into();
+//     });
+
+//     assert!(result.is_err());
 // }
+
+#[test]
+pub fn test_try_into_f64() {
+    // write trait and a test for the Trait TryInto for converting into f64
+    // the test must check both success and error conditions
+    let a = ComplexNumber::new(1.0, 2.0);
+    let b = ComplexNumber::from_real(1.0);
+
+    let wrong: Result<f64, ()> = a.try_into();
+    let correct: Result<f64, ()> = b.try_into();
+
+    assert!(wrong.is_err());
+    assert!(correct.is_ok());
+}
 
 // #[test]
 // pub fn test_try_form_f64() {
