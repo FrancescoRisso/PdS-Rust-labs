@@ -173,16 +173,16 @@ pub fn test_sorting() {
     assert_eq!(v[2], c);
 }
 
-// #[test]
-// pub fn test_as_ref() {
-//     // implement AsRef<f64> for ComplexNumber
-//     // allow a mutable ref to real part as &f64
+#[test]
+pub fn test_as_ref() {
+    // implement AsRef<f64> for ComplexNumber
+    // allow a mutable ref to real part as &f64
 
-//     let a = ComplexNumber::new(1.0, 2.0);
-//     let r = a.as_ref();
+    let a = ComplexNumber::new(1.0, 2.0);
+    let r = a.as_ref();
 
-//     assert_eq!(*r, 1.0);
-// }
+    assert_eq!(*r, 1.0);
+}
 
 // #[test]
 // pub fn test_as_mut() {

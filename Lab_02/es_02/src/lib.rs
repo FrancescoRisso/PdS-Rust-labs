@@ -143,4 +143,10 @@ pub mod solution {
             self.partial_cmp(other).unwrap_or(Ordering::Equal)
         }
     }
+
+    impl AsRef<f64> for ComplexNumber {
+        fn as_ref(&self) -> &f64 {
+            &self.re
+        }
+    }
 }
