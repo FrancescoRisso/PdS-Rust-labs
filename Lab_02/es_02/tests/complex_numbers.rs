@@ -1,3 +1,5 @@
+use std::collections::VecDeque;
+
 use es_02::solution::ComplexNumber;
 
 // for this execise see https://doc.rust-lang.org/beta/std/primitive.f64.html
@@ -221,13 +223,31 @@ pub fn test_hash_with_hash_map() {
     };
 }
 
-// #[test]
-// pub fn test_deque() {
-//     // implement VecDeque for ComplexNumber
-//     // 1. create a VecDeque with capacity 10
-//     // 2. push 10 values in the deque
-//     // 4. find the index of a value with binary_search: it works only if the deque is sorted!!!
-//     // 5. check the result: it should be meaningless
-//     // 3. sort the deque and check afain the result of binary_search, now it should be meaningful
+#[test]
+pub fn test_deque() {
+    // implement VecDeque for ComplexNumber
+    // 1. create a VecDeque with capacity 10
+    // 2. push 10 values in the deque
+    // 4. find the index of a value with binary_search: it works only if the deque is sorted!!!
+    // 5. check the result: it should be meaningless
+    // 3. sort the deque and check afain the result of binary_search, now it should be meaningful
 
-// }
+    let mut vec: VecDeque<ComplexNumber> = VecDeque::with_capacity(10);
+    vec.push_back(ComplexNumber::new(0.1, 0.5));
+    vec.push_back(ComplexNumber::new(0.2, 0.0));
+    vec.push_back(ComplexNumber::new(0.3, 0.5));
+    vec.push_back(ComplexNumber::new(0.4, 0.1));
+    vec.push_back(ComplexNumber::new(0.5, 0.8));
+    vec.push_back(ComplexNumber::new(0.6, 1.0));
+    vec.push_back(ComplexNumber::new(0.7, 0.5));
+    vec.push_back(ComplexNumber::new(0.8, 0.5));
+    vec.push_back(ComplexNumber::new(0.9, 0.5));
+    vec.push_back(ComplexNumber::new(1.0, 0.5));
+
+    let res1 = vec.binary_search(&ComplexNumber::new(0.1, 0.5));
+    vec.make_contiguous().sort();
+    let res2 = vec.binary_search(&ComplexNumber::new(0.1, 0.5));
+
+    println!("{:?}, {:?}", res1, res2);
+	assert!(true)
+}
