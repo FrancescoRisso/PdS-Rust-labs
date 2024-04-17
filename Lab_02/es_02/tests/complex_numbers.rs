@@ -48,16 +48,16 @@ pub fn test_inc_add() {
     assert_eq!(a.to_tuple(), (3.0, 6.0))
 }
 
-// #[test]
-// pub fn test_add_with_reference() {
-//     // references for Rust are new types: you must define the trait for them as RHS
-//     let a = ComplexNumber::new(1.0, 2.0);
-//     let b = ComplexNumber::new(1.0, 2.0);
+#[test]
+pub fn test_add_with_reference() {
+    // references for Rust are new types: you must define the trait for them as RHS
+    let a = ComplexNumber::new(1.0, 2.0);
+    let b = ComplexNumber::new(1.0, 2.0);
 
-//     let c = a + &b;
+    let c = a + &b;
 
-//     assert_eq!(c.to_tuple(), (2.0, 4.0))
-// }
+    assert_eq!(c.to_tuple(), (2.0, 4.0))
+}
 
 // #[test]
 // pub fn test_add_reference_with_reference() {

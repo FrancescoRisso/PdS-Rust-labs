@@ -33,7 +33,7 @@ pub mod solution {
         type Output = Self;
 
         fn add(self, rhs: Self) -> Self::Output {
-            Self::new(self.real() + rhs.real(), self.imag() + rhs.imag())
+            self + &rhs
         }
     }
 
@@ -42,6 +42,14 @@ pub mod solution {
 
         fn add(self, rhs: f32) -> Self::Output {
             self + Self::from_real(rhs)
+        }
+    }
+
+    impl Add<&Self> for ComplexNumber {
+        type Output = Self;
+
+        fn add(self, rhs: &Self) -> Self::Output {
+            Self::new(self.real() + rhs.real(), self.imag() + rhs.imag())
         }
     }
 
