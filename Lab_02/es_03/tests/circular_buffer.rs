@@ -62,3 +62,15 @@ fn get_size() {
     let buf: CircularBuffer<u32> = CircularBuffer::new(2);
     assert_eq!(buf.size(), 2)
 }
+
+#[test]
+fn overwrite() {
+    let mut buf: CircularBuffer<u32> = CircularBuffer::new(2);
+
+    let _ = buf.write(1);
+    let _ = buf.write(2);
+    let _ = buf.overwrite(3);
+
+    assert_eq!(buf.read(), Some(2));
+    assert_eq!(buf.read(), Some(3));
+}
