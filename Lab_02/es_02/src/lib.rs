@@ -116,4 +116,6 @@ pub mod solution {
             self.real() == other.real() && self.imag() == other.imag()
         }
     }
+
+    impl Eq for ComplexNumber {}
 }
