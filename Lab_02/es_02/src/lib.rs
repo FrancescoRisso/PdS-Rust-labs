@@ -49,7 +49,15 @@ pub mod solution {
         type Output = Self;
 
         fn add(self, rhs: &Self) -> Self::Output {
-            Self::new(self.real() + rhs.real(), self.imag() + rhs.imag())
+            &self + rhs
+        }
+    }
+
+    impl Add for &ComplexNumber {
+        type Output = ComplexNumber;
+
+        fn add(self, rhs: Self) -> Self::Output {
+            ComplexNumber::new(self.real() + rhs.real(), self.imag() + rhs.imag())
         }
     }
 
