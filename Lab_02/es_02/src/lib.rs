@@ -149,4 +149,10 @@ pub mod solution {
             &self.re
         }
     }
+
+    impl AsMut<f64> for ComplexNumber {
+        fn as_mut(&mut self) -> &mut f64 {
+            &mut self.re
+        }
+    }
 }

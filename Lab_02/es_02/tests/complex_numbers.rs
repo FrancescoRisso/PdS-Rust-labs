@@ -184,18 +184,18 @@ pub fn test_as_ref() {
     assert_eq!(*r, 1.0);
 }
 
-// #[test]
-// pub fn test_as_mut() {
-//     // implement AsMut<f64> for ComplexNumber
-//     // allow a mutable ref to real part as &mut f64
+#[test]
+pub fn test_as_mut() {
+    // implement AsMut<f64> for ComplexNumber
+    // allow a mutable ref to real part as &mut f64
 
-//     let mut a = ComplexNumber::new(1.0, 2.0);
-//     let r = a.as_mut();
+    let mut a = ComplexNumber::new(1.0, 2.0);
+    let r = a.as_mut();
 
-//     *r = 10.0;
+    *r = 10.0;
 
-//     assert_eq!(a.real(), 10.0);
-// }
+    assert_eq!(a.real(), 10.0);
+}
 
 // #[test]
 // pub fn test_hash_with_hash_map() {
