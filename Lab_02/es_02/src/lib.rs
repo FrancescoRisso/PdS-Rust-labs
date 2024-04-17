@@ -73,4 +73,10 @@ pub mod solution {
             Self::new(self.real(), self.imag())
         }
     }
+
+    impl Default for ComplexNumber {
+        fn default() -> Self {
+            Self::from_real(0.0)
+        }
+    }
 }

@@ -81,16 +81,16 @@ pub fn test_enable_copy() {
     assert_eq!(b.to_tuple(), (2.0, 4.0));
 }
 
-// #[test]
-// pub fn test_default_values() {
-//     // If we want to create an array of complex numbers we need to initialize values with something
-//     // Arrays can't be not initialized in Rust
-//     let array: [ComplexNumber; 10] = Default::default();
+#[test]
+pub fn test_default_values() {
+    // If we want to create an array of complex numbers we need to initialize values with something
+    // Arrays can't be not initialized in Rust
+    let array: [ComplexNumber; 10] = Default::default();
 
-//     for el in array.as_slice() {
-//         assert_eq!(el.to_tuple(), (0.0, 0.0));
-//     }
-// }
+    for el in array.as_slice() {
+        assert_eq!(el.to_tuple(), (0.0, 0.0));
+    }
+}
 
 // #[test]
 // pub fn test_convert_into_real() {
