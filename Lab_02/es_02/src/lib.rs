@@ -23,6 +23,10 @@ pub mod solution {
         pub fn imag(&self) -> f32 {
             self.im
         }
+
+        pub fn to_tuple(&self) -> (f32, f32) {
+            (self.real(), self.imag())
+        }
     }
 
     impl Add for ComplexNumber {
