@@ -2,6 +2,7 @@ pub mod solution {
     use core::f64;
     use std::ops::{Add, AddAssign};
 
+    #[derive(Debug)]
     pub struct ComplexNumber {
         re: f64,
         im: f64,
