@@ -1,6 +1,10 @@
 pub mod solution {
     use core::f64;
-    use std::ops::{Add, AddAssign};
+    use std::{
+        cmp::Ordering,
+        fmt::Debug,
+        ops::{Add, AddAssign},
+    };
 
     #[derive(Debug)]
     pub struct ComplexNumber {
@@ -27,6 +31,10 @@ pub mod solution {
 
         pub fn to_tuple(&self) -> (f64, f64) {
             (self.real(), self.imag())
+        }
+
+        pub fn modulus(&self) -> f64 {
+            (self.imag() * self.imag() + self.real() * self.real()).sqrt()
         }
     }
 
@@ -118,4 +126,21 @@ pub mod solution {
     }
 
     impl Eq for ComplexNumber {}
+
+    impl PartialOrd for ComplexNumber {
+        fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+            match self.modulus() - other.modulus() {
+                x if x == 0.0 => Some(Ordering::Equal),
+                x if x < 0.0 => Some(Ordering::Less),
+                x if x > 0.0 => Some(Ordering::Greater),
+                _ => None,
+            }
+        }
+    }
+
+    impl Ord for ComplexNumber {
+        fn cmp(&self, other: &Self) -> Ordering {
+            self.partial_cmp(other).unwrap_or(Ordering::Equal)
+        }
+    }
 }
