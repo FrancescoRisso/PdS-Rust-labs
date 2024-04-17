@@ -197,30 +197,29 @@ pub fn test_as_mut() {
     assert_eq!(a.real(), 10.0);
 }
 
-// #[test]
-// pub fn test_hash_with_hash_map() {
-//     // in order to use comeplex numbers in a hash map we need to implement Hash
-//     // https://github.com/pretzelhammer/rust-blog/blob/master/posts/tour-of-rusts-standard-library-traits.md#hash
-//     // we can use the to_bits method from f64 to get a u64 representation of the float
-//     let a = ComplexNumber::new(1.0, 2.0);
-//     let b = ComplexNumber::new(2.0, 4.0);
-//     let c: ComplexNumber = 3.0.into();
+#[test]
+pub fn test_hash_with_hash_map() {
+    // in order to use comeplex numbers in a hash map we need to implement Hash
+    // https://github.com/pretzelhammer/rust-blog/blob/master/posts/tour-of-rusts-standard-library-traits.md#hash
+    // we can use the to_bits method from f64 to get a u64 representation of the float
+    let a = ComplexNumber::new(1.0, 2.0);
+    let b = ComplexNumber::new(2.0, 4.0);
+    let c: ComplexNumber = 3.0.into();
 
-//     let mut map = std::collections::HashMap::new();
+    let mut map = std::collections::HashMap::new();
 
-//     // first insert must return None: not present
-//     match map.insert(a, b) {
-//         None => assert!(true),
-//         Some(_) => assert!(false)
-//     };
+    // first insert must return None: not present
+    match map.insert(a, b) {
+        None => assert!(true),
+        Some(_) => assert!(false),
+    };
 
-//     // trty ro replace value with c
-//     match map.insert(a, c) {
-//         None => assert!(false),
-//         Some(x) => assert_eq!(x.to_tuple(), (2.0, 4.0)) // should return the old value, b
-//     };
-
-// }
+    // trty ro replace value with c
+    match map.insert(a, c) {
+        None => assert!(false),
+        Some(x) => assert_eq!(x.to_tuple(), (2.0, 4.0)), // should return the old value, b
+    };
+}
 
 // #[test]
 // pub fn test_deque() {

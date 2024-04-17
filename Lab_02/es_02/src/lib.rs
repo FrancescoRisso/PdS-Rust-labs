@@ -3,6 +3,7 @@ pub mod solution {
     use std::{
         cmp::Ordering,
         fmt::Debug,
+        hash::Hash,
         ops::{Add, AddAssign},
     };
 
@@ -153,6 +154,13 @@ pub mod solution {
     impl AsMut<f64> for ComplexNumber {
         fn as_mut(&mut self) -> &mut f64 {
             &mut self.re
+        }
+    }
+
+    impl Hash for ComplexNumber {
+        fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+            state.write_u64(self.real().to_bits());
+            state.write_u64(self.imag().to_bits());
         }
     }
 }
