@@ -109,6 +109,8 @@ pub mod solution {
         }
     }
 
+    impl Copy for ComplexNumber {}
+
     impl PartialEq for ComplexNumber {
         fn eq(&self, other: &Self) -> bool {
             self.real() == other.real() && self.imag() == other.imag()
