@@ -1,3 +1,5 @@
+use std::ops::Index;
+
 pub struct CircularBuffer<T>
 where
     T: Default + Copy,
@@ -90,5 +92,20 @@ where
 
     pub fn get_head(&self) -> usize {
         self.head
+    }
+}
+
+impl<T> Index<usize> for CircularBuffer<T>
+where
+    T: Default + Copy,
+{
+    type Output = T;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        if index >= (self.size - self.free) {
+            panic!()
+        }
+
+        &self.buf[(self.head + index) % self.size]
     }
 }

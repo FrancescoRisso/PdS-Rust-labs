@@ -82,22 +82,42 @@ fn make_contiguos() {
     let _ = buf.write(1);
     let _ = buf.write(2);
     let _ = buf.write(3);
-	
-	assert_eq!(buf.get_head(), 0);
-	
-	assert_eq!(buf.read(), Some(1));
-	assert_eq!(buf.get_head(), 1);
-	let _ = buf.write(4);
-	
-	assert_eq!(buf.read(), Some(2));
-	assert_eq!(buf.get_head(), 2);
-	
-	buf.make_contiguos();
-	
-	assert_eq!(buf.get_head(), 0);
-	assert_eq!(buf.read(), Some(3));
-	assert_eq!(buf.get_head(), 1);
-	assert_eq!(buf.read(), Some(4));
-	assert_eq!(buf.get_head(), 2);
+
+    assert_eq!(buf.get_head(), 0);
+
+    assert_eq!(buf.read(), Some(1));
+    assert_eq!(buf.get_head(), 1);
+    let _ = buf.write(4);
+
+    assert_eq!(buf.read(), Some(2));
+    assert_eq!(buf.get_head(), 2);
+
+    buf.make_contiguos();
+
+    assert_eq!(buf.get_head(), 0);
+    assert_eq!(buf.read(), Some(3));
+    assert_eq!(buf.get_head(), 1);
+    assert_eq!(buf.read(), Some(4));
+    assert_eq!(buf.get_head(), 2);
 }
 
+#[test]
+fn index() {
+    let mut buf: CircularBuffer<u32> = CircularBuffer::new(3);
+
+    let _ = buf.write(1);
+    let _ = buf.write(2);
+    let _ = buf.write(3);
+    buf.read();
+
+    let ptr1 = buf[0];
+    let ptr2 = buf[1];
+
+    let pan = std::panic::catch_unwind(|| {
+        buf[2];
+    });
+
+    assert_eq!(ptr1, 2);
+    assert_eq!(ptr2, 3);
+    assert!(pan.is_err());
+}
