@@ -31,14 +31,14 @@ pub fn test_add() {
     assert_eq!(c.to_tuple(), (2.0, 4.0));
 }
 
-// #[test]
-// pub fn test_add_with_real() {
-//     // set RHS (rihgt hand side) type for Add!!! It's default value is Self, but it can be changed to anything
-//     let a = ComplexNumber::new(1.0, 2.0);
-//     let b = a + 10.0;
+#[test]
+pub fn test_add_with_real() {
+    // set RHS (rihgt hand side) type for Add!!! It's default value is Self, but it can be changed to anything
+    let a = ComplexNumber::new(1.0, 2.0);
+    let b = a + 10.0;
 
-//     assert_eq!(b.to_tuple(), (11.0, 2.0))
-// }
+    assert_eq!(b.to_tuple(), (11.0, 2.0))
+}
 
 // #[test]
 // pub fn test_inc_add() {

@@ -31,8 +31,17 @@ pub mod solution {
 
     impl Add for ComplexNumber {
         type Output = Self;
+
         fn add(self, rhs: Self) -> Self::Output {
             Self::new(self.real() + rhs.real(), self.imag() + rhs.imag())
+        }
+    }
+
+    impl Add<f32> for ComplexNumber {
+        type Output = Self;
+
+        fn add(self, rhs: f32) -> Self::Output {
+            self + Self::from_real(rhs)
         }
     }
 }
