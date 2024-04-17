@@ -67,4 +67,10 @@ pub mod solution {
             self.im = self.imag() + rhs.imag();
         }
     }
+
+    impl Clone for ComplexNumber {
+        fn clone(&self) -> Self {
+            Self::new(self.real(), self.imag())
+        }
+    }
 }

@@ -70,16 +70,16 @@ pub fn test_add_reference_with_reference() {
     assert_eq!(c.to_tuple(), (2.0, 4.0))
 }
 
-// #[test]
-// pub fn test_enable_copy(){
-//     // why this code won't compile? Read carefully the error message
-//     // what do we nee to do to make it work?
-//     let a = ComplexNumber::new(1.0, 2.0);
+#[test]
+pub fn test_enable_copy() {
+    // why this code won't compile? Read carefully the error message
+    // what do we nee to do to make it work?
+    let a = ComplexNumber::new(1.0, 2.0);
 
-//     let b = a + a;
+    let b = a.clone() + a;
 
-//     assert_eq!(b.to_tuple(), (2.0, 4.0));
-// }
+    assert_eq!(b.to_tuple(), (2.0, 4.0));
+}
 
 // #[test]
 // pub fn test_default_values() {
