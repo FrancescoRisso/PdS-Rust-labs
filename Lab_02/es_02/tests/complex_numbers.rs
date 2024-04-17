@@ -126,11 +126,15 @@ pub fn test_try_into_f64() {
     assert!(correct.is_ok());
 }
 
-// #[test]
-// pub fn test_try_form_f64() {
-//     // write a trait allowing let complex = f64.into()
-//     // and write test
-// }
+#[test]
+pub fn test_try_from_f64() {
+    // write a trait allowing let complex = f64.into()
+    // and write test
+    let from: ComplexNumber = 1.0.into();
+    let to: ComplexNumber = ComplexNumber::from_real(1.0);
+
+    assert_eq!(from.to_tuple(), to.to_tuple());
+}
 
 // #[test]
 // pub fn test_comparison() {

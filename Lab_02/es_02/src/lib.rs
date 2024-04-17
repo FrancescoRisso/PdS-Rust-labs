@@ -101,4 +101,10 @@ pub mod solution {
             }
         }
     }
+
+    impl From<f64> for ComplexNumber {
+        fn from(value: f64) -> Self {
+            Self::from_real(value)
+        }
+    }
 }
