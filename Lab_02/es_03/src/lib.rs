@@ -1,4 +1,4 @@
-use std::ops::Index;
+use std::ops::{Index, IndexMut};
 
 pub struct CircularBuffer<T>
 where
@@ -107,5 +107,18 @@ where
         }
 
         &self.buf[(self.head + index) % self.size]
+    }
+}
+
+impl<T> IndexMut<usize> for CircularBuffer<T>
+where
+    T: Default + Copy,
+{
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        if index >= (self.size - self.free) {
+            panic!()
+        }
+
+        &mut (self.buf[(self.head + index) % self.size])
     }
 }

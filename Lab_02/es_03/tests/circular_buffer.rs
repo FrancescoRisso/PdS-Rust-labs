@@ -121,3 +121,24 @@ fn index() {
     assert_eq!(ptr2, 3);
     assert!(pan.is_err());
 }
+
+#[test]
+fn index_mut() {
+    let mut buf: CircularBuffer<u32> = CircularBuffer::new(3);
+
+    let _ = buf.write(1);
+    let _ = buf.write(2);
+    let _ = buf.write(3);
+    buf.read();
+
+    buf[0] = 5;
+    buf[1] = 6;
+
+    let pan = std::panic::catch_unwind(|| {
+        buf[2];
+    });
+
+    assert_eq!(buf.read(), Some(5));
+    assert_eq!(buf.read(), Some(6));
+    assert!(pan.is_err());
+}
