@@ -10,12 +10,12 @@ pub fn test_create() {
     assert_eq!(a.imag(), 2.0);
 }
 
-// #[test]
-// pub fn test_create_from_real() {
-//     let a = ComplexNumber::from_real(10.0);
-//     assert_eq!(a.real(), 10.0);
-//     assert_eq!(a.imag(), 0.0);
-// }
+#[test]
+pub fn test_create_from_real() {
+    let a = ComplexNumber::from_real(10.0);
+    assert_eq!(a.real(), 10.0);
+    assert_eq!(a.imag(), 0.0);
+}
 
 // #[test]
 // pub fn test_add() {
