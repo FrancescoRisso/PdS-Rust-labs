@@ -136,15 +136,19 @@ pub fn test_try_from_f64() {
     assert_eq!(from.to_tuple(), to.to_tuple());
 }
 
-// #[test]
-// pub fn test_comparison() {
-//     let c = ComplexNumber::new(3.0, 6.0);
-//     let mut v = vec![ComplexNumber::new(1.0, 2.0), ComplexNumber::new(2.0, 4.0), c];
+#[test]
+pub fn test_comparison() {
+    let c = ComplexNumber::new(3.0, 6.0);
+    let mut v = vec![
+        ComplexNumber::new(1.0, 2.0),
+        ComplexNumber::new(2.0, 4.0),
+        c.clone(),
+    ];
 
-//     v.retain(|el| *el == c);
+    v.retain(|el| *el == c);
 
-//     assert_eq!(v.len(), 1);
-// }
+    assert_eq!(v.len(), 1);
+}
 
 // #[test]
 // pub fn test_sorting() {
