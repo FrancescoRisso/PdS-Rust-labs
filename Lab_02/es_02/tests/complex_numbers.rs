@@ -101,17 +101,17 @@ pub fn test_convert_into_real() {
 
 }
 
-// #[test]
-// pub fn test_panic_when_impossible_to_convert_to_real() {
-//     // we can convert into a real only if imag is 0
-//     let a = ComplexNumber::new(1.0, 2.0);
+#[test]
+pub fn test_panic_when_impossible_to_convert_to_real() {
+    // we can convert into a real only if imag is 0
+    let a = ComplexNumber::new(1.0, 2.0);
 
-//     let result = std::panic::catch_unwind(|| {
-//         let _: f64 = a.into();
-//     });
+    let result = std::panic::catch_unwind(|| {
+        let _: f64 = a.into();
+    });
 
-//     assert!(result.is_err());
-// }
+    assert!(result.is_err());
+}
 
 // #[test]
 // pub fn test_try_into_f64() {

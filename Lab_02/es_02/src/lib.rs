@@ -82,7 +82,11 @@ pub mod solution {
 
     impl Into<f64> for ComplexNumber {
         fn into(self) -> f64 {
-            self.real()
+            if self.imag() == 0.0 {
+                self.real()
+            } else {
+                panic!()
+            }
         }
     }
 }
