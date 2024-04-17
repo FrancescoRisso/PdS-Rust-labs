@@ -71,6 +71,24 @@ where
         }
     }
 
-    // // vedi sotto*
-    // pub fn make_contiguos(&mut self) {};
+    // vedi sotto*
+    pub fn make_contiguos(&mut self) {
+        if self.head == 0 {
+            return;
+        }
+
+        let tmp = self.buf[0];
+        for i in 1..self.size {
+            self.buf[i - 1] = self.buf[i];
+        }
+        self.buf[self.size - 1] = tmp;
+
+        self.head -= 1;
+
+        self.make_contiguos();
+    }
+
+    pub fn get_head(&self) -> usize {
+        self.head
+    }
 }
