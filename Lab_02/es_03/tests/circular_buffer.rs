@@ -56,3 +56,9 @@ fn read_with_clear() {
     assert_eq!(buf.read(), Some(2));
     assert_eq!(buf.read(), None);
 }
+
+#[test]
+fn get_size() {
+    let buf: CircularBuffer<u32> = CircularBuffer::new(2);
+    assert_eq!(buf.size(), 2)
+}

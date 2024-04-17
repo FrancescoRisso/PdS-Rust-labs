@@ -58,7 +58,10 @@ where
         self.free = self.size;
     }
 
-    // pub dn size(&self) -> usize;
+    pub fn size(&self) -> usize {
+        self.size
+    }
+	
     // // può essere usata quando il buffer è pieno per forzare una
     // // scrittura riscrivendo l’elemento più vecchio
     // pub fn overwrite(&mut self, item: ...) {};
