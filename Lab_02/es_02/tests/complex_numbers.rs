@@ -40,13 +40,13 @@ pub fn test_add_with_real() {
     assert_eq!(b.to_tuple(), (11.0, 2.0))
 }
 
-// #[test]
-// pub fn test_inc_add() {
-//     let mut a = ComplexNumber::new(1.0, 2.0);
-//     a +=  ComplexNumber::new(2.0, 4.0);
+#[test]
+pub fn test_inc_add() {
+    let mut a = ComplexNumber::new(1.0, 2.0);
+    a +=  ComplexNumber::new(2.0, 4.0);
 
-//     assert_eq!(a.to_tuple(), (3.0, 6.0))
-// }
+    assert_eq!(a.to_tuple(), (3.0, 6.0))
+}
 
 // #[test]
 // pub fn test_add_with_reference() {

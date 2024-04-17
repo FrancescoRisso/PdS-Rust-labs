@@ -1,6 +1,6 @@
 pub mod solution {
     use core::f32;
-    use std::ops::Add;
+    use std::ops::{Add, AddAssign};
 
     pub struct ComplexNumber {
         re: f32,
@@ -42,6 +42,13 @@ pub mod solution {
 
         fn add(self, rhs: f32) -> Self::Output {
             self + Self::from_real(rhs)
+        }
+    }
+
+    impl AddAssign for ComplexNumber {
+        fn add_assign(&mut self, rhs: Self) {
+            self.re = self.real() + rhs.real();
+            self.im = self.imag() + rhs.imag();
         }
     }
 }
