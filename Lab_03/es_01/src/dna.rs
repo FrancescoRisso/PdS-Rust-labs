@@ -43,18 +43,36 @@ pub fn demo1() {
 // For each subsequence find all the matches and to the results (there may be overlaps, ignore them), but in this way you can reuse the previous solution
 // The result will contain: the start position in s, the found subsequence as string slice and the mached subsequence in seq
 // Now the string slices in the rsult depend from two input parameters, which ones?
-// fn subsequences2(s: &str, seq: &[&str]) -> Vec<(usize, &str, &str)> {
-//     unimplemented!()
-// }
+fn subsequences2<'a, 'b>(s: &'a str, seq: &'a [&'a str]) -> Vec<(usize, &'a str, &'a str)> {
+    let sequence_plus_matches: Vec<(&str, Vec<(usize, &str)>)> = seq
+        .iter()
+        .map(|sequence| (*sequence, subsequences1(s, sequence)))
+        .collect();
 
-// pub fn demo2() {
-//     let a = "AACGGTAACC".to_string();
-//     let seqs = ["A1-1,C2-4", "G1-1,T2-4"];
+    let matches_with_sequence: Vec<Vec<(usize, &str, &str)>> = sequence_plus_matches
+        .iter()
+        .map(|(sequence, vec)| {
+            let tmp: Vec<(usize, &str, &str)> = vec
+                .iter()
+                .map(|(pos, matched)| (*pos, *matched, *sequence))
+                .collect();
+            tmp
+        })
+        .collect();
 
-//     for (off, matched, sub) in subsequences2(&a, &seqs) {
-//         println!("Found subsequence {} at position {}: {}", matched, off, sub);
-//     }
-// }
+    let flattened: Vec<(usize, &str, &str)> = matches_with_sequence.into_iter().flatten().collect();
+
+    return flattened;
+}
+
+pub fn demo2() {
+    let a = "AACGGTAACC".to_string();
+    let seqs = ["A1-1,C2-4", "G1-1,T2-4"];
+
+    for (off, matched, sub) in subsequences2(&a, &seqs) {
+        println!("Found subsequence {} at position {}: {}", matched, off, sub);
+    }
+}
 
 // Now we want to do some DNA editing! Therefore we receive a mutable string and we'd like to return a vector of mutable string slices
 // Follow this steps:
