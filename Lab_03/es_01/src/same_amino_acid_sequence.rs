@@ -65,7 +65,7 @@ impl From<&str> for SameAmminoacidSequence {
 }
 
 impl SameAmminoacidSequence {
-    pub fn matches<'a, 'b>(&'a self, string: &'b str) -> Option<(usize, &'b str)> {
+    pub fn matches<'a, 'b>(&'a self, string: &'b str) -> Option<&'b str> {
         let mut chars = string.chars();
 
         for _ in 0..self.min {
@@ -87,6 +87,6 @@ impl SameAmminoacidSequence {
             }
         }
 
-        Some((len, &string[len..]))
+        Some(&string[..len])
     }
 }
