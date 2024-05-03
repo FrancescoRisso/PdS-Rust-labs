@@ -7,4 +7,5 @@ use dna::*;
 fn main() {
     demo1();
     demo2();
+	demo4();
 }

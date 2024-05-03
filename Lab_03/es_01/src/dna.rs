@@ -100,18 +100,21 @@ pub fn demo2() {
 // Therefore we want to process a subsequence as soon as we find it, without storing it in a vector
 // A solution is to pass a closure to the function, which will be called for each match
 // do you need to put lifetime annotations in the closure? why?
-// fn subsequence4(s: &str, seq: &str /* add your closure here */) {
-//     unimplemented!()
-// }
+fn subsequence4(mut s: &str, seq: &str, f: fn(usize, &str) -> ()) {
+    while let Some((pos, string)) = find_sub(s, seq) {
+        s = &s[pos + string.len()..];
+        f(pos, string);
+    }
+}
 
-// pub fn demo4() {
-//     let a = "AACGGTAACC".to_string();
-//     let seq = "A1-1,C2-4";
+pub fn demo4() {
+    let a = "AACGGTAACC".to_string();
+    let seq = "A1-1,C2-4";
 
-//     subsequence4(&a, seq, |pos, sub| {
-//         println!("Found subsequence at position {}: {}", pos, sub);
-//     });
-// }
+    subsequence4(&a, seq, |pos, sub| {
+        println!("Found subsequence at position {}: {}", pos, sub);
+    });
+}
 
 // Now let's define a struct SimpleDNAIter (add the required lifetimes), memorizing a DNA sequence and the subsequence to search
 // Then we add a next() method to the struct, which will return the next subsequence found in the DNA sequence after each call
