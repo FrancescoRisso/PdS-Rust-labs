@@ -82,19 +82,31 @@ pub fn demo2() {
 // 4. Spoiler: basically it's not possibile to return more then one mutable reference to the same data
 // 5. Try this workaround: return a vector of indexes (first solution) and let the caller extract the mutable references
 // 7. (later in the course you will learn about smart pointers, which can be used to solve this kind of problems in a more elegant way)
-// fn subsequences3(s: &mut str, seq: &str) -> Vec<(usize, &mut str)> {
-//     let mut v = Vec::new();
-//     v
-// }
+fn subsequences3(s: &mut str, seq: &str) -> Vec<(usize, usize)> {
+    let mut res: Vec<(usize, usize)> = Vec::new();
+    let mut s_head = &*s;
 
-// pub fn demo3() {
-//     let mut a = "AACGGTAACC".to_string();
-//     let seq = "A1-1,C2-4";
+    while let Some((pos, string)) = find_sub(s_head, seq) {
+        s_head = &s[pos + string.len()..];
+        res.push((pos, string.len()));
+    }
 
-//     for (off, sub) in subsequences3(&mut a, seq) {
-//         println!("Found subsequence at position {}: {}", off, sub);
-//     }
-// }
+    res
+}
+
+pub fn demo3() {
+    let mut a = "AACGGTAACC".to_string();
+    let seq = "A1-1,C2-4";
+
+    for (off, len) in subsequences3(&mut a, seq) {
+        println!(
+            "Found subsequence at position {} with len {}: {}",
+            off,
+            len,
+            &mut a[off..off + len]
+        );
+    }
+}
 
 // DNA strings may be very long and we can get a lot of matches.
 // Therefore we want to process a subsequence as soon as we find it, without storing it in a vector
