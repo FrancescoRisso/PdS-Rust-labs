@@ -182,41 +182,56 @@ pub fn demo_simple_dna_iter() {
 
 // finally we want to implement a real iterator, so that it can be used in a for loop and it may be combined we all the most common iterator methods
 // The struct DNAIter is already defined, you have to implement the Iterator trait for it and add lifetimes
-// struct DNAIter<> {
-//     s: &str,
-//     seq: &str,
-// }
+struct DNAIter<'a> {
+    s: &'a str,
+    seq: &'a str,
+    start: usize,
+}
 
-// impl DNAIter {
-//     pub fn new(s: &str, seq: &str) -> DNAIter {
-//         DNAIter {
-//             s: s,
-//             seq: seq,
-//         }
-//     }
-// }
+impl<'a> DNAIter<'a> {
+    pub fn new(s: &'a str, seq: &'a str) -> DNAIter<'a> {
+        DNAIter {
+            s: s,
+            seq: seq,
+            start: 0,
+        }
+    }
+}
 
-// impl Iterator for DNAIter {
-//     type Item = (usize, &str);
+impl<'a> Iterator for DNAIter<'a> {
+    type Item = (usize, &'a str);
 
-//     fn next(&mut self) -> Option<Self::Item> {
-//         unimplemented!()
-//     }
-// }
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.start == self.s.len() {
+            return None;
+        }
 
-// fn demo_dna_iter() {
-//     let dna_iter = DNAIter::new("ACGTACGTAAACCCGTACGT", "A1-3,C1-2");
+        match find_sub(&self.s[self.start..], self.seq) {
+            None => {
+                self.start = self.s.len();
+                None
+            }
+            Some((index, ptr)) => {
+                self.start = self.start + index + ptr.len();
+                Some((self.start - ptr.len(), ptr))
+            }
+        }
+    }
+}
 
-//     // now you can combine it with all the iterator modifiers!!!
-//     dna_iter
-//         .filter(|(pos, sub)| sub.len() >= 5)
-//         .for_each(|(pos, sub)| {
-//             println!(
-//                 "Found subsequence at least long 5 at position {}: {}",
-//                 pos, sub
-//             )
-//         });
-// }
+pub fn demo_dna_iter() {
+    let dna_iter = DNAIter::new("ACGTACGTAAACCCGTACGT", "A1-3,C1-2");
+
+    // now you can combine it with all the iterator modifiers!!!
+    dna_iter
+        .filter(|(_pos, sub)| sub.len() >= 5)
+        .for_each(|(pos, sub)| {
+            println!(
+                "Found subsequence at least long 5 at position {}: {}",
+                pos, sub
+            )
+        });
+}
 
 // now let's return an iterator without defining a struct, just using a closure
 // the std lib of rust support you with the std::from_fn() function
