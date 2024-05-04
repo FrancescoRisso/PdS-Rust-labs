@@ -9,4 +9,5 @@ fn main() {
     demo2();
     demo3();
     demo4();
+    demo_simple_dna_iter();
 }

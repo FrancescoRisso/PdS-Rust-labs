@@ -136,29 +136,49 @@ pub fn demo4() {
 // This approach is similar to the previous one, but it's more flexible and it can be used in more complex scenarios. For example you may interrupt it
 // at any time and resume it later
 
-// struct SimpleDNAIter<'a> {
-//     s: &str,
-//     seq: &str,
-// }
+struct SimpleDNAIter<'a> {
+    s: &'a str,
+    seq: &'a str,
+    start: usize,
+}
 
-// impl SimpleDNAIter {
-//     pub fn new(s: &str, seq: &str) -> Self {
-//         SimpleDNAIter { s: s, seq: seq }
-//     }
+impl<'a> SimpleDNAIter<'a> {
+    pub fn new(s: &'a str, seq: &'a str) -> Self {
+        SimpleDNAIter {
+            s: s,
+            seq: seq,
+            start: 0,
+        }
+    }
 
-//     pub fn next(&self) -> Option<(usize, &str)> {
-//         unimplemented!()
-//     }
-// }
+    pub fn next(&mut self) -> Option<(usize, &str)> {
+        if self.start == self.s.len() {
+            return None;
+        }
 
-// fn demo_SimpleDNAIter() {
-//     let dna_iter = SimpleDNAIter::new("ACGTACGTACGTACGT", "A1-1,C1-1");
+        match find_sub(&self.s[self.start..], self.seq) {
+            None => {
+                self.start = self.s.len();
+                None
+            }
+            Some((index, ptr)) => {
+                self.start = self.start + index + ptr.len();
+                Some((self.start - ptr.len(), ptr))
+            }
+        }
+    }
+}
 
-//     while let Some((pos, subseq)) = dna_iter.next() {
-//         println!("Found subsequence at position {}: {}", pos, subseq);
-//         // we can break and stop if we have found what we were looking for
-//     }
-// }
+// TODO: togliere il ciclo infinito rimasto
+
+pub fn demo_simple_dna_iter() {
+    let mut dna_iter = SimpleDNAIter::new("ACGTACGTACGTACGT", "A1-1,C1-1");
+
+    while let Some((pos, subseq)) = dna_iter.next() {
+        println!("Found subsequence at position {}: {}", pos, subseq);
+        // we can break and stop if we have found what we were looking for
+    }
+}
 
 // finally we want to implement a real iterator, so that it can be used in a for loop and it may be combined we all the most common iterator methods
 // The struct DNAIter is already defined, you have to implement the Iterator trait for it and add lifetimes
