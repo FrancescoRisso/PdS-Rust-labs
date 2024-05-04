@@ -11,4 +11,5 @@ fn main() {
     demo4();
     demo_simple_dna_iter();
     demo_dna_iter();
+    demo_dna_iter2();
 }
