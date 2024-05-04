@@ -1,5 +1,7 @@
 mod file_system;
 
+use file_system::demo;
+
 fn main() {
-    println!("Hello, world!");
+    demo();
 }
