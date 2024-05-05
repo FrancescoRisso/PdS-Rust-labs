@@ -2,9 +2,10 @@ mod dir;
 mod file;
 pub mod fs_error;
 mod match_result;
-mod node;
+pub mod node;
 
 use crate::dir::Dir;
+use crate::file::File;
 use crate::fs_error::FSError;
 use crate::node::Node;
 
@@ -46,10 +47,10 @@ impl Filesystem {
         }
     }
 
-    //     // possible errors: NotFound, path is NotADir, Duplicate
-    //     pub fn create_file(&mut self, path: &str, name: &str) -> Result<&mut File, FSError> {
-    //         unimplemented!()
-    //     }
+    // possible errors: NotFound, path is NotADir, Duplicate
+    pub fn create_file(&mut self, path: &str, name: &str) -> Result<&mut File, FSError> {
+        unimplemented!()
+    }
 
     //     // updated modification time of the file or the dir
     //     // possible errors: NotFound

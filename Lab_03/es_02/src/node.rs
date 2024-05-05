@@ -19,12 +19,28 @@ impl<'a> TryInto<&'a mut Dir> for &'a mut Node {
     }
 }
 
+impl<'a> TryInto<&'a File> for &'a Node {
+    type Error = FSError;
+
+    fn try_into(self) -> Result<&'a File, Self::Error> {
+        match self {
+            Node::Dir(_) => Err(FSError::GenericError),
+            Node::File(f) => Ok(f),
+        }
+    }
+}
+
 impl Node {
     pub fn name(&self) -> &str {
         match self {
             Node::Dir(dir) => dir.name(),
             Node::File(file) => file.name(),
         }
+    }
+
+    pub fn is_file(&self) -> bool {
+        let tmp: Result<&File, FSError> = self.try_into();
+        tmp.is_ok()
     }
 
     pub fn get<'a, 'b>(&'a self, path: &'b str) -> Result<&'a Node, FSError> {

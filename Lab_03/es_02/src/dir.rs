@@ -22,27 +22,25 @@ impl Dir {
     }
 
     pub fn get<'a, 'b>(&'a self, path: &'b str) -> Result<&'a Node, FSError> {
-        match self
-            .children
-            .iter()
-            .filter(|child| child.get(path).is_ok())
-            .next()
-        {
-            None => Err(FSError::NotFound),
-            Some(node) => Ok(node),
+        for child in &self.children {
+            match child.get(path) {
+                Ok(node) => return Ok(node),
+                _ => {}
+            };
         }
+
+        Err(FSError::NotFound)
     }
 
     pub fn get_mut<'a, 'b>(&'a mut self, path: &'b str) -> Result<&'a mut Node, FSError> {
-        match self
-            .children
-            .iter_mut()
-            .filter(|child| child.get(path).is_ok())
-            .next()
-        {
-            None => Err(FSError::NotFound),
-            Some(node) => Ok(node),
+        for child in &mut self.children {
+            match child.get_mut(path) {
+                Ok(node) => return Ok(node),
+                _ => {}
+            };
         }
+
+        Err(FSError::NotFound)
     }
 
     pub fn mkdir(&mut self, name: String) -> &mut Node {
