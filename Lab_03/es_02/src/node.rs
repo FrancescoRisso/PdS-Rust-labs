@@ -68,4 +68,16 @@ impl Node {
             };
         }
     }
+
+    pub fn test_root_node() -> Self {
+        Node::Dir(Dir::test_root_dir_with_subdir())
+    }
+
+    pub fn test_dir_node() -> Self {
+        Node::Dir(Dir::test_dir_with_file())
+    }
+
+    pub fn test_file_node() -> Self {
+        Node::File(File::test_file())
+    }
 }

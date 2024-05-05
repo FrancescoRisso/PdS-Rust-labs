@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum FSError {
     NotFound,     // file or dir not found
     NotADir,      // when trying to ad children to a file

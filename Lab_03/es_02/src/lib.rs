@@ -1,8 +1,8 @@
 mod dir;
 mod file;
-mod fs_error;
+pub mod fs_error;
 mod match_result;
-pub mod node;
+mod node;
 
 use crate::dir::Dir;
 use crate::fs_error::FSError;
@@ -72,7 +72,7 @@ impl Filesystem {
         }
     }
 
-    //     // get a mutable reference to a node in the filesystem, given the path
+    // get a mutable reference to a node in the filesystem, given the path
     pub fn get_mut(&mut self, path: &str) -> Result<&mut Node, FSError> {
         match path {
             "/" => Ok(&mut self.root),
@@ -99,4 +99,10 @@ impl Filesystem {
     //     pub fn walk(&self, f: impl Fn(&str, &Node)) {
     //         unimplemented!()
     //     }
+
+    pub fn get_test_fs() -> Self {
+        Filesystem {
+            root: Node::test_root_node(),
+        }
+    }
 }

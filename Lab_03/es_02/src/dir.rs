@@ -49,4 +49,17 @@ impl Dir {
         self.children.push(Node::Dir(Dir::new(name)));
         self.children.last_mut().unwrap()
     }
+
+    pub fn test_root_dir_with_subdir() -> Self {
+        let mut tmp = Dir::new("".to_string());
+        tmp.children.push(Node::test_dir_node());
+        tmp.children.push(Node::test_file_node());
+        tmp
+    }
+
+    pub fn test_dir_with_file() -> Self {
+        let mut tmp = Dir::new("testDir".to_string());
+        tmp.children.push(Node::test_file_node());
+        tmp
+    }
 }
