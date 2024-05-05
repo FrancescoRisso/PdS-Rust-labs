@@ -1,6 +1,11 @@
+mod demo;
+mod dir;
+mod file;
 mod file_system;
+mod fs_error;
+mod node;
 
-use file_system::demo;
+use demo::demo;
 
 fn main() {
     demo();
