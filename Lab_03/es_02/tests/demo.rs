@@ -1,14 +1,7 @@
-use crate::file_system::Filesystem;
-use crate::node::Node;
+use es_02::{node::Node, Filesystem};
 
-// // define lifetimes
-// struct MatchResult {
-//     q: &str, // matched query string
-//     path: String, // matched path
-//     node: &Node, // matched node
-// }
-
-pub fn demo() {
+#[test]
+fn demo() {
     let mut fs = Filesystem::new();
 
     // create a directory structure, 10 dirs with a child dir and file each one

@@ -1,3 +1,9 @@
+mod dir;
+mod file;
+mod fs_error;
+mod match_result;
+pub mod node;
+
 use crate::dir::Dir;
 use crate::fs_error::FSError;
 use crate::node::Node;
