@@ -47,6 +47,11 @@ mod my_tests_get {
     }
 
     #[test]
+    fn get_nothing() {
+        assert!(Filesystem::get_test_fs().get("").is_ok());
+    }
+
+    #[test]
     fn get_dir_root_mut() {
         assert!(Filesystem::get_test_fs().get_mut("/").is_ok());
     }
@@ -87,6 +92,11 @@ mod my_tests_get {
         assert!(Filesystem::get_test_fs()
             .get_mut("/testFolder/testFile2")
             .is_err_and(|e| e == FSError::NotFound));
+    }
+
+    #[test]
+    fn get_nothing_mut() {
+        assert!(Filesystem::get_test_fs().get_mut("").is_ok());
     }
 }
 
