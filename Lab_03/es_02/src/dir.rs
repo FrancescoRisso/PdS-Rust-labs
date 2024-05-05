@@ -2,6 +2,7 @@ use crate::fs_error::FSError;
 use crate::node::Node;
 use std::time::SystemTime;
 
+#[derive(PartialEq)]
 pub struct Dir {
     name: String,
     modified: SystemTime,
@@ -51,6 +52,30 @@ impl Dir {
     pub fn mkfile(&mut self, f: Node) -> &mut Node {
         self.children.push(f);
         self.children.last_mut().unwrap()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.children.len() == 0
+    }
+
+    pub fn rm(&mut self, node_name: String) -> Result<Node, FSError> {
+        let index = match self
+            .children
+            .iter()
+            .position(|node| node.name() == node_name)
+        {
+            Some(index) => index,
+            None => return Err(FSError::NotFound),
+        };
+
+        if (&self.children[index])
+            .try_into()
+            .is_ok_and(|dir: &Dir| !dir.is_empty())
+        {
+            return Err(FSError::DirNotEmpty);
+        }
+
+        Ok(self.children.swap_remove(index))
     }
 
     pub fn test_root_dir_with_subdir() -> Self {

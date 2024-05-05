@@ -220,3 +220,49 @@ mod my_tests_touch {
         assert!(fs.touch("/test").is_err_and(|e| e == FSError::NotFound));
     }
 }
+
+mod my_tests_rm {
+    use super::*;
+
+    #[test]
+    fn rm_file() {
+        let mut fs = Filesystem::new();
+        assert!(fs.create_file("/", "myFile").is_ok());
+        assert!(fs.delete("/myFile").is_ok_and(|f| f.is_file()));
+    }
+
+    #[test]
+    fn rm_empty_dir() {
+        let mut fs = Filesystem::new();
+        _ = fs.mkdir("/", "myFolder");
+        assert!(fs.delete("/myFolder").is_ok_and(|f| f.is_dir()));
+    }
+
+    #[test]
+    fn rm_dir_with_file() {
+        let mut fs = Filesystem::new();
+        _ = fs.mkdir("/", "myFolder");
+        _ = fs.create_file("/myFolder", "myFile");
+        assert!(fs
+            .delete("/myFolder")
+            .is_err_and(|e| e == FSError::DirNotEmpty));
+    }
+
+    #[test]
+    fn rm_dir_with_subdir() {
+        let mut fs = Filesystem::new();
+        _ = fs.mkdir("/", "myFolder");
+        _ = fs.mkdir("/myFolder", "subdir");
+        assert!(fs
+            .delete("/myFolder")
+            .is_err_and(|e| e == FSError::DirNotEmpty));
+    }
+
+    #[test]
+    fn rm_non_existing() {
+        let mut fs = Filesystem::new();
+        assert!(fs
+            .delete("/myFolder")
+            .is_err_and(|e| e == FSError::NotFound));
+    }
+}

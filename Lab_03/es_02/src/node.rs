@@ -3,6 +3,7 @@ use crate::dir::Dir;
 use crate::file::File;
 use crate::fs_error::FSError;
 
+#[derive(PartialEq)]
 pub enum Node {
     File(File),
     Dir(Dir),
@@ -12,6 +13,17 @@ impl<'a> TryInto<&'a mut Dir> for &'a mut Node {
     type Error = FSError;
 
     fn try_into(self) -> Result<&'a mut Dir, Self::Error> {
+        match self {
+            Node::File(_) => Err(FSError::NotADir),
+            Node::Dir(dir) => Ok(dir),
+        }
+    }
+}
+
+impl<'a> TryInto<&'a Dir> for &'a Node {
+    type Error = FSError;
+
+    fn try_into(self) -> Result<&'a Dir, Self::Error> {
         match self {
             Node::File(_) => Err(FSError::NotADir),
             Node::Dir(dir) => Ok(dir),
@@ -51,6 +63,11 @@ impl Node {
 
     pub fn is_file(&self) -> bool {
         let tmp: Result<&File, FSError> = self.try_into();
+        tmp.is_ok()
+    }
+
+    pub fn is_dir(&self) -> bool {
+        let tmp: Result<&Dir, FSError> = self.try_into();
         tmp.is_ok()
     }
 

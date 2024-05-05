@@ -1,5 +1,6 @@
 use std::time::SystemTime;
 
+#[derive(PartialEq)]
 pub struct File {
     name: String,
     modified: SystemTime,

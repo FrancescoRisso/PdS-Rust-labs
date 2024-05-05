@@ -74,12 +74,21 @@ impl Filesystem {
         }
     }
 
-    //     // remove a node from the filesystem and return it
-    //     // if it's a dir, it must be empty
-    //     // possible errors: NotFound, DirNotEmpty
-    //     pub fn delete(&mut self, path: &str) -> Result<Node, FSError> {
-    //         unimplemented!()
-    //     }
+    // remove a node from the filesystem and return it
+    // if it's a dir, it must be empty
+    // possible errors: NotFound, DirNotEmpty
+    pub fn delete(&mut self, path: &str) -> Result<Node, FSError> {
+        let (prev_path, name) = match path.rsplit_once("/") {
+            None => return Err(FSError::NotFound),
+            Some((prev_path, name)) => (prev_path, name),
+        };
+
+        match self.get_mut(prev_path) {
+            Err(_) => Err(FSError::NotFound),
+            Ok(Node::File(_)) => Err(FSError::NotFound),
+            Ok(Node::Dir(dir)) => Ok(dir.rm(name.to_string())?),
+        }
+    }
 
     // get a reference to a node in the filesystem, given the path
     pub fn get(&mut self, path: &str) -> Result<&Node, FSError> {
