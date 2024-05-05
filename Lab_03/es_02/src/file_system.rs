@@ -1,4 +1,4 @@
-use std::{env::consts::FAMILY, time::SystemTime};
+use std::time::SystemTime;
 
 struct File {
     name: String,
@@ -18,6 +18,7 @@ enum Node {
     Dir(Dir),
 }
 
+#[derive(Debug)]
 enum FSError {
     NotFound,     // file or dir not found
     NotADir,      // when trying to ad children to a file
@@ -61,8 +62,36 @@ impl Dir {
             Some(node) => Ok(node),
         }
     }
+
+    fn get_mut<'a, 'b>(&'a mut self, path: &'b str) -> Result<&'a mut Node, FSError> {
+        match self
+            .children
+            .iter_mut()
+            .filter(|child| child.get(path).is_ok())
+            .next()
+        {
+            None => Err(FSError::NotFound),
+            Some(node) => Ok(node),
+        }
+    }
+
+    fn mkdir(&mut self, name: String) -> &mut Node {
+        self.children.push(Node::Dir(Dir::new(name)));
+        self.children.last_mut().unwrap()
+    }
 }
 // let next_node_name: &str = path.split("/").next().unwrap();
+
+impl<'a> TryInto<&'a mut Dir> for &'a mut Node {
+    type Error = FSError;
+
+    fn try_into(self) -> Result<&'a mut Dir, Self::Error> {
+        match self {
+            Node::File(_) => Err(FSError::NotADir),
+            Node::Dir(dir) => Ok(dir),
+        }
+    }
+}
 
 impl Node {
     fn name(&self) -> &str {
@@ -79,6 +108,27 @@ impl Node {
                     let (dir_name, rest_of_path) = path.split_once("/").unwrap();
                     if dir_name == dir.name() {
                         dir.get(rest_of_path)
+                    } else {
+                        Err(FSError::NotFound)
+                    }
+                }
+                Node::File(_) => Err(FSError::NotFound),
+            };
+        } else {
+            return match self.name() == path {
+                true => Ok(self),
+                false => Err(FSError::NotFound),
+            };
+        }
+    }
+
+    fn get_mut<'a, 'b>(&'a mut self, path: &'b str) -> Result<&'a mut Node, FSError> {
+        if path.contains("/") {
+            return match self {
+                Node::Dir(dir) => {
+                    let (dir_name, rest_of_path) = path.split_once("/").unwrap();
+                    if dir_name == dir.name() {
+                        dir.get_mut(rest_of_path)
                     } else {
                         Err(FSError::NotFound)
                     }
@@ -114,9 +164,19 @@ impl Filesystem {
     // create a new directory in the filesystem under the given path
     // return a reference the created dir
     // possible errors: NotFound, path NotADir, Duplicate
-    // pub fn mkdir(&mut self, path: &str, name: &str) -> Result<&mut Dir, FSError> {
-    //     unimplemented!()
-    // }
+    pub fn mkdir(&mut self, path: &str, name: &str) -> Result<&mut Dir, FSError> {
+        match self.get_mut(path) {
+            Err(e) => Err(e),
+            Ok(Node::File(_)) => Err(FSError::NotADir),
+            Ok(Node::Dir(dir)) => {
+                if dir.get(name).is_ok() {
+                    Err(FSError::Duplicate)
+                } else {
+                    dir.mkdir(name.to_string()).try_into()
+                }
+            }
+        }
+    }
 
     //     // possible errors: NotFound, path is NotADir, Duplicate
     //     pub fn create_file(&mut self, path: &str, name: &str) -> Result<&mut File, FSError> {
@@ -138,13 +198,19 @@ impl Filesystem {
 
     // get a reference to a node in the filesystem, given the path
     pub fn get(&mut self, path: &str) -> Result<&Node, FSError> {
-        self.root.get(path)
+        match path {
+            "/" => Ok(&self.root),
+            _ => self.root.get(path),
+        }
     }
 
     //     // get a mutable reference to a node in the filesystem, given the path
-    //     pub fn get_mut(&mut self, path: &str) -> Result<&mut Node, FSError> {
-    //         unimplemented!()
-    //     }
+    pub fn get_mut(&mut self, path: &str) -> Result<&mut Node, FSError> {
+        match path {
+            "/" => Ok(&mut self.root),
+            _ => self.root.get_mut(path),
+        }
+    }
 
     //     // search for a list of paths in the filesystem
     //     // qs is a list query strings with constraints
@@ -168,35 +234,20 @@ impl Filesystem {
 }
 
 pub fn demo() {
-    // let mut fs = Filesystem::new();
+    let mut fs = Filesystem::new();
 
-    //     // create a directory structure, 10 dirs with a child dir and file each one
-    //     for i in 0..10 {
-    //         fs.mkdir("/", format!("dir{}", i).as_str()).unwrap();
-    //         fs.mkdir(format!("/dir{}", i).as_str(), "child1").unwrap();
-    //         fs.create_file(format!("/dir{}", i).as_str(), "file1").unwrap();
-    //     }
-
-    let mut fs = Filesystem {
-        root: Node::Dir(Dir {
-            name: "".to_string(),
-            modified: SystemTime::now(),
-            children: vec![Node::Dir(Dir {
-                name: "dir2".to_string(),
-                modified: SystemTime::now(),
-                children: vec![Node::File(File {
-                    name: "child1".to_string(),
-                    modified: SystemTime::now(),
-                    content: vec![],
-                })],
-            })],
-        }),
-    };
+    // create a directory structure, 10 dirs with a child dir and file each one
+    for i in 0..10 {
+        fs.mkdir("/", format!("dir{}", i).as_str()).unwrap();
+        fs.mkdir(format!("/dir{}", i).as_str(), "child1").unwrap();
+        // fs.create_file(format!("/dir{}", i).as_str(), "file1")
+        //     .unwrap();
+    }
 
     println!("find /child");
     if let Ok(res) = fs.get("/dir2/child1") {
         match res {
-            Node::Dir(d) => {
+            Node::Dir(_) => {
                 println!("dir2 found");
             }
             // try to match all possible errros
