@@ -45,9 +45,7 @@ impl Dir {
             children: Vec::new(),
         }
     }
-}
 
-impl Dir {
     fn name(&self) -> &str {
         self.name.as_str()
     }
