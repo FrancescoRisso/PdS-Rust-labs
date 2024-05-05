@@ -61,11 +61,18 @@ impl Filesystem {
         }
     }
 
-    //     // updated modification time of the file or the dir
-    //     // possible errors: NotFound
-    //     pub fn touch(&mut self, path: &str) -> Result<(), FSError> {
-    //         unimplemented!()
-    //     }
+    // updated modification time of the file or the dir
+    // possible errors: NotFound
+    pub fn touch(&mut self, path: &str) -> Result<(), FSError> {
+        match self.get_mut(path) {
+            Err(_) => Err(FSError::NotFound),
+            Ok(Node::Dir(_)) => Err(FSError::NotFound),
+            Ok(Node::File(f)) => {
+                f.touch();
+                Ok(())
+            }
+        }
+    }
 
     //     // remove a node from the filesystem and return it
     //     // if it's a dir, it must be empty

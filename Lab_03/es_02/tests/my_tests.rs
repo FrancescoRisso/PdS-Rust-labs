@@ -4,86 +4,86 @@ mod my_tests_get {
     use super::*;
 
     #[test]
-    fn test_01_get_dir_root() {
+    fn get_dir_root() {
         assert!(Filesystem::get_test_fs().get("/").is_ok());
     }
 
     #[test]
-    fn test_02_get_dir() {
+    fn get_dir() {
         assert!(Filesystem::get_test_fs().get("/testDir").is_ok());
     }
 
     #[test]
-    fn test_03_get_file() {
+    fn get_file() {
         assert!(Filesystem::get_test_fs().get("/testFile").is_ok());
     }
 
     #[test]
-    fn test_04_get_file_in_dir() {
+    fn get_file_in_dir() {
         assert!(Filesystem::get_test_fs()
             .get("/testDir/testFile")
             .is_ok_and(|f| f.is_file()));
     }
 
     #[test]
-    fn test_05_get_wrong_dir() {
+    fn get_wrong_dir() {
         assert!(Filesystem::get_test_fs()
             .get("/testDir2")
             .is_err_and(|e| e == FSError::NotFound));
     }
 
     #[test]
-    fn test_06_get_wrong_file() {
+    fn get_wrong_file() {
         assert!(Filesystem::get_test_fs()
             .get("/testFile2")
             .is_err_and(|e| e == FSError::NotFound));
     }
 
     #[test]
-    fn test_07_get_wrong_file_in_dir() {
+    fn get_wrong_file_in_dir() {
         assert!(Filesystem::get_test_fs()
             .get("/testFolder/testFile2")
             .is_err_and(|e| e == FSError::NotFound));
     }
 
     #[test]
-    fn test_08_get_dir_root_mut() {
+    fn get_dir_root_mut() {
         assert!(Filesystem::get_test_fs().get_mut("/").is_ok());
     }
 
     #[test]
-    fn test_09_get_dir_mut() {
+    fn get_dir_mut() {
         assert!(Filesystem::get_test_fs().get_mut("/testDir").is_ok());
     }
 
     #[test]
-    fn test_10_get_file_mut() {
+    fn get_file_mut() {
         assert!(Filesystem::get_test_fs().get_mut("/testFile").is_ok());
     }
 
     #[test]
-    fn test_11_get_file_in_dir_mut() {
+    fn get_file_in_dir_mut() {
         assert!(Filesystem::get_test_fs()
             .get_mut("/testDir/testFile")
             .is_ok_and(|f| f.is_file()));
     }
 
     #[test]
-    fn test_12_get_wrong_dir_mut() {
+    fn get_wrong_dir_mut() {
         assert!(Filesystem::get_test_fs()
             .get_mut("/testDir2")
             .is_err_and(|e| e == FSError::NotFound));
     }
 
     #[test]
-    fn test_13_get_wrong_file_mut() {
+    fn get_wrong_file_mut() {
         assert!(Filesystem::get_test_fs()
             .get_mut("/testFile2")
             .is_err_and(|e| e == FSError::NotFound));
     }
 
     #[test]
-    fn test_14_get_wrong_file_in_dir_mut() {
+    fn get_wrong_file_in_dir_mut() {
         assert!(Filesystem::get_test_fs()
             .get_mut("/testFolder/testFile2")
             .is_err_and(|e| e == FSError::NotFound));
@@ -94,14 +94,14 @@ mod my_tests_mkdir {
     use super::*;
 
     #[test]
-    fn test_15_mkdir_ok() {
+    fn mkdir_ok() {
         let mut fs = Filesystem::new();
         assert!(fs.mkdir("/", "myFolder").is_ok());
         assert!(fs.get("/myFolder").is_ok());
     }
 
     #[test]
-    fn test_16_mkdir_subdir_ok() {
+    fn mkdir_subdir_ok() {
         let mut fs = Filesystem::new();
         assert!(fs.mkdir("/", "myFolder").is_ok());
         assert!(fs.mkdir("/myFolder", "subfolder").is_ok());
@@ -109,7 +109,7 @@ mod my_tests_mkdir {
     }
 
     #[test]
-    fn test_17_mkdir_path_not_found() {
+    fn mkdir_path_not_found() {
         let mut fs = Filesystem::new();
         assert!(fs
             .mkdir("/myFolder", "subfolder")
@@ -117,7 +117,7 @@ mod my_tests_mkdir {
     }
 
     #[test]
-    fn test_17_mkdir_folder_exists() {
+    fn mkdir_folder_exists() {
         let mut fs = Filesystem::new();
         assert!(fs.mkdir("/", "myFolder").is_ok());
         assert!(fs
@@ -126,7 +126,7 @@ mod my_tests_mkdir {
     }
 
     #[test]
-    fn test_18_mkdir_not_a_folder() {
+    fn mkdir_not_a_folder() {
         let mut fs = Filesystem::get_test_fs();
         assert!(fs
             .mkdir("/testDir/testFile", "myFolder")
@@ -138,14 +138,14 @@ mod my_tests_mkfile {
     use super::*;
 
     #[test]
-    fn test_19_mkfile_ok() {
+    fn mkfile_ok() {
         let mut fs = Filesystem::new();
         assert!(fs.create_file("/", "myFile").is_ok());
         assert!(fs.get("/myFile").is_ok_and(|res| res.is_file()));
     }
 
     #[test]
-    fn test_20_mkfile_subdir_ok() {
+    fn mkfile_subdir_ok() {
         let mut fs = Filesystem::new();
         assert!(fs.mkdir("/", "myFolder").is_ok());
         assert!(fs.create_file("/myFolder", "myFile").is_ok());
@@ -153,7 +153,7 @@ mod my_tests_mkfile {
     }
 
     #[test]
-    fn test_21_mkfile_path_not_found() {
+    fn mkfile_path_not_found() {
         let mut fs = Filesystem::new();
         assert!(fs
             .create_file("/myFolder", "myFile")
@@ -161,7 +161,7 @@ mod my_tests_mkfile {
     }
 
     #[test]
-    fn test_22_mkfile_file_exists() {
+    fn mkfile_file_exists() {
         let mut fs = Filesystem::new();
         assert!(fs.create_file("/", "myFile").is_ok());
         assert!(fs
@@ -170,7 +170,7 @@ mod my_tests_mkfile {
     }
 
     #[test]
-    fn test_23_mkfile_folder_same_name_exists() {
+    fn mkfile_folder_same_name_exists() {
         let mut fs = Filesystem::new();
         assert!(fs.mkdir("/", "test").is_ok());
         assert!(fs
@@ -179,10 +179,34 @@ mod my_tests_mkfile {
     }
 
     #[test]
-    fn test_24_mkfile_not_a_folder() {
+    fn mkfile_not_a_folder() {
         let mut fs = Filesystem::get_test_fs();
         assert!(fs
             .create_file("/testDir/testFile", "myFile")
             .is_err_and(|e| e == FSError::NotADir));
+    }
+}
+
+mod my_tests_touch {
+    use super::*;
+
+    #[test]
+    fn touch_ok() {
+        let mut fs = Filesystem::new();
+        assert!(fs.create_file("/", "myFile").is_ok());
+        assert!(fs.touch("/myFile").is_ok());
+    }
+
+    #[test]
+    fn touch_not_found() {
+        let mut fs = Filesystem::new();
+        assert!(fs.touch("/myFile").is_err_and(|e| e == FSError::NotFound));
+    }
+
+    #[test]
+    fn touch_is_dir() {
+        let mut fs = Filesystem::new();
+        _ = fs.mkdir("/", "test");
+        assert!(fs.touch("/test").is_err_and(|e| e == FSError::NotFound));
     }
 }

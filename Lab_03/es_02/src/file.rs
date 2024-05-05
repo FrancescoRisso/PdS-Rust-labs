@@ -19,6 +19,10 @@ impl File {
         self.name.as_str()
     }
 
+    pub fn touch(&mut self) {
+        self.modified = SystemTime::now()
+    }
+
     pub fn test_file() -> Self {
         File::new("testFile".to_string())
     }
