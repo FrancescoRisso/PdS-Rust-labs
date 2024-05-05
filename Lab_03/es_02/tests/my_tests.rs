@@ -20,7 +20,9 @@ mod my_tests_get {
 
     #[test]
     fn test_04_get_file_in_dir() {
-        assert!(Filesystem::get_test_fs().get("/testDir/testFile").is_ok());
+        assert!(Filesystem::get_test_fs()
+            .get("/testDir/testFile")
+            .is_ok_and(|f| f.is_file()));
     }
 
     #[test]
@@ -63,7 +65,7 @@ mod my_tests_get {
     fn test_11_get_file_in_dir_mut() {
         assert!(Filesystem::get_test_fs()
             .get_mut("/testDir/testFile")
-            .is_ok());
+            .is_ok_and(|f| f.is_file()));
     }
 
     #[test]
@@ -104,5 +106,30 @@ mod my_tests_mkdir {
         assert!(fs.mkdir("/", "myFolder").is_ok());
         assert!(fs.mkdir("/myFolder", "subfolder").is_ok());
         assert!(fs.get("/myFolder/subfolder").is_ok());
+    }
+
+    #[test]
+    fn test_17_mkdir_path_not_found() {
+        let mut fs = Filesystem::new();
+        assert!(fs
+            .mkdir("/myFolder", "subfolder")
+            .is_err_and(|e| e == FSError::NotFound));
+    }
+
+    #[test]
+    fn test_17_mkdir_folder_exists() {
+        let mut fs = Filesystem::new();
+        assert!(fs.mkdir("/", "myFolder").is_ok());
+        assert!(fs
+            .mkdir("/", "myFolder")
+            .is_err_and(|e| e == FSError::Duplicate));
+    }
+
+    #[test]
+    fn test_18_mkdir_not_a_folder() {
+        let mut fs = Filesystem::get_test_fs();
+        assert!(fs
+            .mkdir("/testDir/testFile", "myFolder")
+            .is_err_and(|e| e == FSError::NotADir));
     }
 }
