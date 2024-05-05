@@ -133,3 +133,56 @@ mod my_tests_mkdir {
             .is_err_and(|e| e == FSError::NotADir));
     }
 }
+
+mod my_tests_mkfile {
+    use super::*;
+
+    #[test]
+    fn test_19_mkfile_ok() {
+        let mut fs = Filesystem::new();
+        assert!(fs.create_file("/", "myFile").is_ok());
+        assert!(fs.get("/myFile").is_ok_and(|res| res.is_file()));
+    }
+
+    #[test]
+    fn test_20_mkfile_subdir_ok() {
+        let mut fs = Filesystem::new();
+        assert!(fs.mkdir("/", "myFolder").is_ok());
+        assert!(fs.create_file("/myFolder", "myFile").is_ok());
+        assert!(fs.get("/myFolder/myFile").is_ok_and(|res| res.is_file()));
+    }
+
+    #[test]
+    fn test_21_mkfile_path_not_found() {
+        let mut fs = Filesystem::new();
+        assert!(fs
+            .create_file("/myFolder", "myFile")
+            .is_err_and(|e| e == FSError::NotFound));
+    }
+
+    #[test]
+    fn test_22_mkfile_file_exists() {
+        let mut fs = Filesystem::new();
+        assert!(fs.create_file("/", "myFile").is_ok());
+        assert!(fs
+            .create_file("/", "myFile")
+            .is_err_and(|e| e == FSError::Duplicate));
+    }
+
+    #[test]
+    fn test_23_mkfile_folder_same_name_exists() {
+        let mut fs = Filesystem::new();
+        assert!(fs.mkdir("/", "test").is_ok());
+        assert!(fs
+            .create_file("/", "test")
+            .is_err_and(|e| e == FSError::Duplicate));
+    }
+
+    #[test]
+    fn test_24_mkfile_not_a_folder() {
+        let mut fs = Filesystem::get_test_fs();
+        assert!(fs
+            .create_file("/testDir/testFile", "myFile")
+            .is_err_and(|e| e == FSError::NotADir));
+    }
+}

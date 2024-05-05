@@ -30,6 +30,17 @@ impl<'a> TryInto<&'a File> for &'a Node {
     }
 }
 
+impl<'a> TryInto<&'a mut File> for &'a mut Node {
+    type Error = FSError;
+
+    fn try_into(self) -> Result<&'a mut File, Self::Error> {
+        match self {
+            Node::Dir(_) => Err(FSError::GenericError),
+            Node::File(f) => Ok(f),
+        }
+    }
+}
+
 impl Node {
     pub fn name(&self) -> &str {
         match self {

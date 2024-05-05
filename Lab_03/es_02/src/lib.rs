@@ -34,10 +34,9 @@ impl Filesystem {
     // return a reference the created dir
     // possible errors: NotFound, path NotADir, Duplicate
     pub fn mkdir(&mut self, path: &str, name: &str) -> Result<&mut Dir, FSError> {
-        match self.get_mut(path) {
-            Err(e) => Err(e),
-            Ok(Node::File(_)) => Err(FSError::NotADir),
-            Ok(Node::Dir(dir)) => {
+        match self.get_mut(path)? {
+            Node::File(_) => Err(FSError::NotADir),
+            Node::Dir(dir) => {
                 if dir.get(name).is_ok() {
                     Err(FSError::Duplicate)
                 } else {
@@ -49,7 +48,17 @@ impl Filesystem {
 
     // possible errors: NotFound, path is NotADir, Duplicate
     pub fn create_file(&mut self, path: &str, name: &str) -> Result<&mut File, FSError> {
-        unimplemented!()
+        match self.get_mut(path)? {
+            Node::File(_) => Err(FSError::NotADir),
+            Node::Dir(dir) => {
+                if dir.get(name).is_ok() {
+                    Err(FSError::Duplicate)
+                } else {
+                    dir.mkfile(Node::File(File::new(name.to_string())))
+                        .try_into()
+                }
+            }
+        }
     }
 
     //     // updated modification time of the file or the dir

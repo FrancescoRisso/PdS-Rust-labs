@@ -48,6 +48,11 @@ impl Dir {
         self.children.last_mut().unwrap()
     }
 
+    pub fn mkfile(&mut self, f: Node) -> &mut Node {
+        self.children.push(f);
+        self.children.last_mut().unwrap()
+    }
+
     pub fn test_root_dir_with_subdir() -> Self {
         let mut tmp = Dir::new("".to_string());
         tmp.children.push(Node::test_dir_node());
