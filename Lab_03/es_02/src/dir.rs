@@ -78,6 +78,12 @@ impl Dir {
         Ok(self.children.swap_remove(index))
     }
 
+    pub fn walk(&self, f: &impl Fn(&str, &Node), path: &String) {
+        for child in &self.children {
+            child.walk(f, &path);
+        }
+    }
+
     pub fn test_root_dir_with_subdir() -> Self {
         let mut tmp = Dir::new("".to_string());
         tmp.children.push(Node::test_dir_node());

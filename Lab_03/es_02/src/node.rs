@@ -113,6 +113,21 @@ impl Node {
         }
     }
 
+    pub fn walk(&self, f: &impl Fn(&str, &Node), path: &String) {
+        let mut this_path = path.clone();
+
+        this_path.push_str(self.name());
+
+        match self {
+            Node::File(_) => f(this_path.as_str(), self),
+            Node::Dir(dir) => {
+                this_path.push('/');
+				f(this_path.as_str(), self);
+                dir.walk(f, &this_path);
+            }
+        }
+    }
+
     pub fn test_root_node() -> Self {
         Node::Dir(Dir::test_root_dir_with_subdir())
     }

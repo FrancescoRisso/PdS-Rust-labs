@@ -1,4 +1,4 @@
-use es_02::{fs_error::FSError, Filesystem};
+use es_02::{fs_error::FSError, node::Node, Filesystem};
 
 mod my_tests_get {
     use super::*;
@@ -264,5 +264,18 @@ mod my_tests_rm {
         assert!(fs
             .delete("/myFolder")
             .is_err_and(|e| e == FSError::NotFound));
+    }
+}
+
+mod my_tests_walk {
+    use super::*;
+
+    #[test]
+    fn rm_file() {
+        let fs = Filesystem::get_test_fs();
+        let f = |path: &str, node: &Node| {
+            println!("{} {}", if node.is_dir() { "D" } else { "F" }, path)
+        };
+        fs.walk(f);
     }
 }

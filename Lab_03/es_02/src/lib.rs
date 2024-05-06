@@ -120,11 +120,11 @@ impl Filesystem {
     //         unimplemented!()
     //     }
 
-    //     // walk the filesystem, starting from the root, and call the closure for each node with its path
-    //     // the first parameter of the closure is the path of the node, second is the node itself
-    //     pub fn walk(&self, f: impl Fn(&str, &Node)) {
-    //         unimplemented!()
-    //     }
+    // walk the filesystem, starting from the root, and call the closure for each node with its path
+    // the first parameter of the closure is the path of the node, second is the node itself
+    pub fn walk(&self, f: impl Fn(&str, &Node)) {
+        self.root.walk(&f, &"".to_string())
+    }
 
     pub fn get_test_fs() -> Self {
         Filesystem {
