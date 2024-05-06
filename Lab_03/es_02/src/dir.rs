@@ -1,4 +1,5 @@
 use crate::fs_error::FSError;
+use crate::match_result::MatchResult;
 use crate::node::Node;
 use std::time::SystemTime;
 
@@ -81,6 +82,17 @@ impl Dir {
     pub fn walk(&self, f: &impl Fn(&str, &Node), path: &String) {
         for child in &self.children {
             child.walk(f, &path);
+        }
+    }
+
+    pub fn find_r<'a, 'b>(
+        &'a self,
+        query: &'a str,
+        res: &'b mut Vec<MatchResult<'a>>,
+        path: &'static str,
+    ) {
+        for child in &self.children {
+            child.find(query, res, path);
         }
     }
 

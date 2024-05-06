@@ -279,3 +279,52 @@ mod my_tests_walk {
         fs.walk(f);
     }
 }
+mod my_tests_find {
+    use super::*;
+
+    #[test]
+    fn find_file() {
+        let mut fs = Filesystem::get_test_fs();
+        _ = fs.create_file("/", "otherFile");
+        assert_eq!(fs.find(&["type:file"]).len(), 3)
+    }
+
+    #[test]
+    fn find_dir() {
+        let mut fs = Filesystem::get_test_fs();
+        _ = fs.create_file("/", "otherFile");
+        assert_eq!(fs.find(&["type:dir"]).len(), 2)
+    }
+
+    #[test]
+    fn find_name() {
+        let mut fs = Filesystem::get_test_fs();
+        _ = fs.create_file("/", "otherFile");
+        assert_eq!(fs.find(&["name:otherFile"]).len(), 1)
+    }
+
+    #[test]
+    fn find_partname() {
+        let mut fs = Filesystem::get_test_fs();
+        _ = fs.create_file("/", "otherFile");
+        assert_eq!(fs.find(&["partname:other"]).len(), 1)
+    }
+
+    #[test]
+    fn find_multiple_finds() {
+        let fs = Filesystem::get_test_fs();
+        assert_eq!(fs.find(&["partname:test"]).len(), 3)
+    }
+
+    #[test]
+    fn find_multiple_queries() {
+        let fs = Filesystem::get_test_fs();
+        assert_eq!(fs.find(&["type:dir", "type:file"]).len(), 4)
+    }
+
+    #[test]
+    fn find_same_thing_found_more_times() {
+        let fs = Filesystem::get_test_fs();
+        assert_eq!(fs.find(&["name:testFile", "type:file"]).len(), 4)
+    }
+}

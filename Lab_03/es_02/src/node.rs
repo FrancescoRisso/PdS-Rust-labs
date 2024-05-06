@@ -2,6 +2,7 @@
 use crate::dir::Dir;
 use crate::file::File;
 use crate::fs_error::FSError;
+use crate::match_result::MatchResult;
 
 #[derive(PartialEq)]
 pub enum Node {
@@ -122,9 +123,36 @@ impl Node {
             Node::File(_) => f(this_path.as_str(), self),
             Node::Dir(dir) => {
                 this_path.push('/');
-				f(this_path.as_str(), self);
+                f(this_path.as_str(), self);
                 dir.walk(f, &this_path);
             }
+        }
+    }
+
+    fn matches(&self, query: &str) -> bool {
+        match query.split_once(":").unwrap() {
+            ("type", "dir") => self.is_dir(),
+            ("type", "file") => self.is_file(),
+            ("name", name) => self.name() == name,
+            ("partname", name) => self.name().contains(name),
+            _ => unreachable!(),
+        }
+    }
+
+    pub fn find<'a, 'b>(
+        &'a self,
+        query: &'a str,
+        res: &'b mut Vec<MatchResult<'a>>,
+        path: &'static str,
+    ) {
+        if self.matches(query) {
+            res.push(MatchResult::new(query, path, self))
+        }
+
+        if self.is_dir() {
+            let dir: &Dir = self.try_into().unwrap();
+            path.to_string().push_str(self.name());
+            dir.find_r(query, res, &path);
         }
     }
 

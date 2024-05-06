@@ -7,6 +7,7 @@ pub mod node;
 use crate::dir::Dir;
 use crate::file::File;
 use crate::fs_error::FSError;
+use crate::match_result::MatchResult;
 use crate::node::Node;
 
 pub struct Filesystem {
@@ -106,19 +107,25 @@ impl Filesystem {
         }
     }
 
-    //     // search for a list of paths in the filesystem
-    //     // qs is a list query strings with constraints
-    //     // the constraints must be matched in or (it's returned any node matching at least one constraint)
-    //     // constraint format: "type:pattern"
-    //     // constraints:
-    //     // - "type:dir" -> match only directories
-    //     // - "type:file" -> match only files
-    //     // - "name:value" -> match only nodes with the given name
-    //     // - "partname:value" -> match only nodes with the given string in the name
+    // search for a list of paths in the filesystem
+    // qs is a list query strings with constraints
+    // the constraints must be matched in or (it's returned any node matching at least one constraint)
+    // constraint format: "type:pattern"
+    // constraints:
+    // - "type:dir" -> match only directories
+    // - "type:file" -> match only files
+    // - "name:value" -> match only nodes with the given name
+    // - "partname:value" -> match only nodes with the given string in the name
 
-    //     pub fn find<'a>(&'a self, qs: &[&'a str]) -> Vec<MatchResult> {
-    //         unimplemented!()
-    //     }
+    pub fn find<'a>(&'a self, qs: &[&'a str]) -> Vec<MatchResult<'a>> {
+        let mut res: Vec<MatchResult> = vec![];
+
+        for constr in qs {
+            self.root.find(&constr, &mut res, "");
+        }
+
+        res
+    }
 
     // walk the filesystem, starting from the root, and call the closure for each node with its path
     // the first parameter of the closure is the path of the node, second is the node itself
