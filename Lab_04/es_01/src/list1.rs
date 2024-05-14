@@ -86,33 +86,6 @@ impl<T> List<T> {
 
         tmp.reverse()
     }
-    //     if n == 0 {
-    //         return List::new();
-    //     }
-
-    //     let head = mem::replace(&mut self.head, ListLink::Nil);
-    //     let mut last_took = &head;
-
-    //     for _ in 0..(n - 2) {
-    //         match last_took {
-    //             ListLink::Nil => {}
-    //             ListLink::Cons(_, next) => last_took = next,
-    //         }
-    //     }
-
-    //     match last_took {
-    //         ListLink::Nil => self.head = ListLink::Nil,
-    // 		ListLink::Cons(_, mut next) => {
-    // 			let a = mem::replace(&mut next, Box::new(ListLink::Nil));
-    // 		}
-    //         // ListLink::Cons(_, next) => {
-    //         //     let a = next.as_ref();
-    //         //     //_ = mem::replace(&mut self.head, **next)
-    //         // }
-    //     };
-
-    //     List { head }
-    // }
 }
 
 pub struct ListIter<'a, T> {
