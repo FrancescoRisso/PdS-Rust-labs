@@ -107,6 +107,44 @@ mod switch_node {
     }
 }
 
+mod node_outs {
+    use std::{cell::RefCell, rc::Rc};
+
+    use es_02::node::Node;
+
+    #[test]
+    fn get_no_out() {
+        let node: Node = "G g1 - off".into();
+        assert!(node.get_out(0).is_none());
+        assert!(node.get_out(1).is_none());
+    }
+
+    #[test]
+    fn get_wrong_index() {
+        let node: Node = "G g1 - off".into();
+        assert!(node.get_out(2).is_none());
+    }
+
+    #[test]
+    fn add_one() {
+        let mut node: Node = "G g1 - off".into();
+        let ch1: Node = "S s1 g1 off".into();
+        node.add_out(Some(Rc::new(RefCell::new(ch1))));
+        assert!(node.get_out(0).is_some());
+    }
+
+    #[test]
+    fn add_two() {
+        let mut node: Node = "G g1 - off".into();
+        let ch1: Node = "S s1 g1 off".into();
+        let ch2: Node = "S s2 g1 off".into();
+        node.add_out(Some(Rc::new(RefCell::new(ch1))));
+        node.add_out(Some(Rc::new(RefCell::new(ch2))));
+        assert!(node.get_out(0).is_some());
+        assert!(node.get_out(1).is_some());
+    }
+}
+
 mod create_tree {
     use std::collections::HashMap;
 

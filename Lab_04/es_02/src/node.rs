@@ -88,6 +88,16 @@ impl Node {
         Ok(())
     }
 
+    pub fn add_out(&mut self, out: NodeLink) {
+        let index = match self.outs {
+            [None, None] => 0,
+            [Some(_), None] => 1,
+            _ => return,
+        };
+
+        self.outs[index] = out;
+    }
+
     pub fn update_parent(&mut self, tree: CircuitTree) {
         _ = tree;
         _ = self.outs;
@@ -104,5 +114,12 @@ impl Node {
 
     pub fn get_parent(&self) -> NodeLink {
         self.parent.clone()?.upgrade()
+    }
+
+    pub fn get_out(&self, index: usize) -> NodeLink {
+        match index {
+            0..=1 => self.outs[index].clone(),
+            _ => None,
+        }
     }
 }
