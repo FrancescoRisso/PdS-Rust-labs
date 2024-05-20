@@ -7,6 +7,12 @@ pub struct CircuitTree {
     names: PhantomData<Node>,
 }
 
+impl From<&str> for CircuitTree {
+    fn from(value: &str) -> Self {
+        unimplemented!()
+    }
+}
+
 impl CircuitTree {
     pub fn new() -> Self {
         unimplemented!()
