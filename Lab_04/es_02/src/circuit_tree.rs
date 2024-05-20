@@ -64,8 +64,18 @@ impl CircuitTree {
 
     // is the light on? Error if it's not a light
     pub fn light_status(&self, name: &str) -> Result<bool, String> {
-        _ = name;
-        unimplemented!();
+        match self.get(name) {
+            None => Err("Node not found".to_string()),
+            Some(node_link) => {
+                let node_ptr = node_link.as_ref().borrow();
+                match node_ptr.is_light() {
+                    false => Err("Node is not light".to_string()),
+                    true => Ok(node_ptr
+                        .get_chain_status()
+                        .expect("Problems in the circuit")),
+                }
+            }
+        }
     }
 
     pub fn turn_light_on(&self, name: &str) {

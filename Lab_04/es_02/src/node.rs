@@ -117,7 +117,25 @@ impl Node {
         match self.function {
             NodeFunction::Generator(state) => Some(state),
             NodeFunction::Switch(state) => Some(state),
-            NodeFunction::Light => None,
+            NodeFunction::Light => Some(self.get_chain_status()?),
+        }
+    }
+
+    pub fn get_chain_status(&self) -> Option<bool> {
+        match self.function {
+            NodeFunction::Generator(true) => Some(true),
+            NodeFunction::Generator(false) => Some(false),
+            NodeFunction::Switch(false) => Some(false),
+            _ => {
+                // this is either a light or an "onS switch, that simply relay the parent's state
+                match &self.parent {
+                    None => None,
+                    Some(parent_weak) => match parent_weak.upgrade() {
+                        None => None,
+                        Some(parent) => parent.as_ref().borrow().get_chain_status(),
+                    },
+                }
+            }
         }
     }
 
@@ -142,5 +160,9 @@ impl Node {
 
     pub fn get_parent_name(&self) -> String {
         self.parent_name.clone().unwrap_or("".to_string())
+    }
+
+    pub fn is_light(&self) -> bool {
+        self.function == NodeFunction::Light
     }
 }
