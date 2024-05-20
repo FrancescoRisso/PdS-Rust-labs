@@ -139,4 +139,8 @@ impl Node {
     pub fn get_name(&self) -> String {
         self.name.clone()
     }
+
+    pub fn get_parent_name(&self) -> String {
+        self.parent_name.clone().unwrap_or("".to_string())
+    }
 }

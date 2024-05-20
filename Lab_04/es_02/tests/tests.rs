@@ -239,12 +239,7 @@ mod create_tree {
         let root_out = root.get_out(0).unwrap();
         let root_out = root_out.as_ref().borrow();
 
-        let fake_child = Node::new(
-            "l1".to_string(),
-            NodeFunction::Generator(false),
-            None,
-            [None, None],
-        );
+        let fake_child = Node::new("l1".to_string(), NodeFunction::Light, None, [None, None]);
 
         assert_eq!(*root_out, fake_child);
     }

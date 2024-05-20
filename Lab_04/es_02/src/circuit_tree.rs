@@ -19,9 +19,14 @@ impl From<&str> for CircuitTree {
             node.update_parent(&res);
 
             let node_name = node.get_name();
+            let parent_name = node.get_parent_name();
+
             let node_link = node.encapsulate();
 
-            // TODO: update parent outs
+            match res.get(&parent_name) {
+                None => {}
+                Some(parent) => parent.as_ref().borrow_mut().add_out(node_link.clone()),
+            }
 
             if first_line {
                 first_line = false;
