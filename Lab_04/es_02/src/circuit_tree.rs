@@ -12,28 +12,11 @@ impl From<&str> for CircuitTree {
     fn from(value: &str) -> Self {
         let mut res = CircuitTree::new();
 
-        let mut first_line = true;
-
         for line in value.lines() {
-            let mut node: Node = line.into();
-            node.update_parent(&res);
-
-            let node_name = node.get_name();
+            let node: Node = line.into();
             let parent_name = node.get_parent_name();
 
-            let node_link = node.encapsulate();
-
-            match res.get(&parent_name) {
-                None => {}
-                Some(parent) => parent.as_ref().borrow_mut().add_out(node_link.clone()),
-            }
-
-            if first_line {
-                first_line = false;
-                res.root = node_link.clone();
-            }
-
-            res.names.insert(node_name, node_link);
+            res.add(parent_name.as_str(), node);
         }
 
         res
@@ -61,10 +44,22 @@ impl CircuitTree {
     }
 
     // add a new node
-    pub fn add(&mut self, parent_name: &str, node: Node) {
-        _ = parent_name;
-        _ = node;
-        unimplemented!()
+    pub fn add(&mut self, parent_name: &str, mut node: Node) {
+        node.update_parent(&self);
+
+        let node_name = node.get_name();
+        let node_link = node.encapsulate();
+
+        if self.root.is_none() {
+            self.root = node_link.clone();
+        }
+
+        match self.get(&parent_name) {
+            None => {}
+            Some(parent) => parent.as_ref().borrow_mut().add_out(node_link.clone()),
+        }
+
+        self.names.insert(node_name, node_link);
     }
 
     // is the light on? Error if it's not a light
