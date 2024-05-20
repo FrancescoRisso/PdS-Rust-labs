@@ -98,10 +98,19 @@ impl Node {
         self.outs[index] = out;
     }
 
-    pub fn update_parent(&mut self, tree: CircuitTree) {
-        _ = tree;
-        _ = self.outs;
-        unimplemented!()
+    pub fn update_parent(&mut self, tree: &CircuitTree) {
+        match &self.parent_name {
+            None => {}
+            Some(str) => match str.as_str() {
+                "-" => {}
+                name => {
+                    self.parent = match tree.get(name) {
+                        Some(node) => Some(Rc::downgrade(&node)),
+                        None => None,
+                    }
+                }
+            },
+        };
     }
 
     pub fn get_status(&mut self) -> Option<bool> {

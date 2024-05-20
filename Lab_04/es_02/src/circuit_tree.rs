@@ -15,11 +15,12 @@ impl From<&str> for CircuitTree {
         let mut first_line = true;
 
         for line in value.lines() {
-            let node: Node = line.into();
+            let mut node: Node = line.into();
+            node.update_parent(&res);
+
             let node_name = node.get_name();
             let node_link = node.encapsulate();
 
-            // TODO: update node parent
             // TODO: update parent outs
 
             if first_line {
@@ -48,10 +49,10 @@ impl CircuitTree {
 
     // get a node by name
     pub fn get(&self, name: &str) -> NodeLink {
-        match self.names.get(name)  {
-			None => None,
-			Some(res) => res.clone()
-		}
+        match self.names.get(name) {
+            None => None,
+            Some(res) => res.clone(),
+        }
     }
 
     // add a new node
