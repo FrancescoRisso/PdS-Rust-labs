@@ -48,10 +48,10 @@ impl CircuitTree {
 
     // get a node by name
     pub fn get(&self, name: &str) -> NodeLink {
-        _ = self.root;
-        _ = self.names;
-        _ = name;
-        unimplemented!()
+        match self.names.get(name)  {
+			None => None,
+			Some(res) => res.clone()
+		}
     }
 
     // add a new node
