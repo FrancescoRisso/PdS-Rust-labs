@@ -127,7 +127,7 @@ impl Node {
             NodeFunction::Generator(false) => Some(false),
             NodeFunction::Switch(false) => Some(false),
             _ => {
-                // this is either a light or an "onS switch, that simply relay the parent's state
+                // this is either a light or an "on" switch, that simply relay the parent's state
                 match &self.parent {
                     None => None,
                     Some(parent_weak) => match parent_weak.upgrade() {
@@ -137,6 +137,22 @@ impl Node {
                 }
             }
         }
+    }
+
+    pub fn turn_on_chain(&mut self) {
+        match self.function {
+            NodeFunction::Generator(false) => self.function = NodeFunction::Generator(true),
+            NodeFunction::Switch(false) => self.function = NodeFunction::Switch(true),
+            _ => {}
+        };
+
+        match &self.parent {
+            None => {}
+            Some(parent_weak) => match parent_weak.upgrade() {
+                None => {}
+                Some(parent) => parent.as_ref().borrow_mut().turn_on_chain(),
+            },
+        };
     }
 
     pub fn get_parent(&self) -> NodeLink {

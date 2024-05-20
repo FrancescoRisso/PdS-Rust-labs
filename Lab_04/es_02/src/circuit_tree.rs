@@ -79,8 +79,16 @@ impl CircuitTree {
     }
 
     pub fn turn_light_on(&self, name: &str) {
-        _ = name;
-        unimplemented!();
+        match self.get(name) {
+            None => {}
+            Some(node_link) => {
+                let mut node_ptr = node_link.as_ref().borrow_mut();
+                match node_ptr.is_light() {
+                    false => {}
+                    true => node_ptr.turn_on_chain(),
+                }
+            }
+        };
     }
 
     pub fn get_node_names(&self) -> HashSet<String> {
