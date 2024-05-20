@@ -146,7 +146,7 @@ mod node_outs {
 }
 
 mod create_tree {
-    use std::collections::HashMap;
+    use std::collections::{HashMap, HashSet};
 
     use es_02::{
         circuit_tree::CircuitTree,
@@ -163,8 +163,9 @@ mod create_tree {
     fn generator_only() {
         let s = "G g1 - off";
         let tree: CircuitTree = s.into();
-        let vec: Vec<String> = vec!["g1".to_string()];
-        assert_eq!(tree.get_node_names(), vec)
+        let vec = vec!["g1".to_string()];
+        let set: HashSet<String> = HashSet::from_iter(vec.iter().map(|s| s.clone()));
+        assert_eq!(tree.get_node_names(), set)
     }
 
     #[test]
@@ -172,7 +173,8 @@ mod create_tree {
         let s = "G g1 - off\nS s1 g1 off";
         let tree: CircuitTree = s.into();
         let vec: Vec<String> = vec!["g1".to_string(), "s1".to_string()];
-        assert_eq!(tree.get_node_names(), vec)
+        let set: HashSet<String> = HashSet::from_iter(vec.iter().map(|s| s.clone()));
+        assert_eq!(tree.get_node_names(), set)
     }
 
     #[test]
@@ -180,7 +182,8 @@ mod create_tree {
         let s = "G g1 - off\nL l1 g1";
         let tree: CircuitTree = s.into();
         let vec: Vec<String> = vec!["g1".to_string(), "l1".to_string()];
-        assert_eq!(tree.get_node_names(), vec)
+        let set: HashSet<String> = HashSet::from_iter(vec.iter().map(|s| s.clone()));
+        assert_eq!(tree.get_node_names(), set)
     }
 
     #[test]
@@ -188,7 +191,8 @@ mod create_tree {
         let s = "G g1 - off\nS s1 g1 off\nL l1 s1";
         let tree: CircuitTree = s.into();
         let vec: Vec<String> = vec!["g1".to_string(), "s1".to_string(), "l1".to_string()];
-        assert_eq!(tree.get_node_names(), vec)
+        let set: HashSet<String> = HashSet::from_iter(vec.iter().map(|s| s.clone()));
+        assert_eq!(tree.get_node_names(), set)
     }
 
     #[test]
@@ -201,7 +205,8 @@ mod create_tree {
             "l1".to_string(),
             "l2".to_string(),
         ];
-        assert_eq!(tree.get_node_names(), vec)
+        let set: HashSet<String> = HashSet::from_iter(vec.iter().map(|s| s.clone()));
+        assert_eq!(tree.get_node_names(), set)
     }
 
     #[test]

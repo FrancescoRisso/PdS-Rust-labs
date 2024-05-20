@@ -1,5 +1,5 @@
 use crate::node::{Node, NodeLink};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 #[derive(PartialEq, Debug)]
 pub struct CircuitTree {
@@ -10,8 +10,30 @@ pub struct CircuitTree {
 
 impl From<&str> for CircuitTree {
     fn from(value: &str) -> Self {
-        _ = value;
-        unimplemented!()
+        let mut res = CircuitTree {
+            root: None,
+            names: HashMap::new(),
+        };
+
+        let mut first_line = true;
+
+        for line in value.lines() {
+            let node: Node = line.into();
+            let node_name = node.get_name();
+            let node_link = node.encapsulate();
+
+            // TODO: update node parent
+            // TODO: update parent outs
+
+            if first_line {
+                first_line = false;
+                res.root = node_link.clone();
+            }
+
+            res.names.insert(node_name, node_link);
+        }
+
+        res
     }
 }
 
@@ -50,7 +72,7 @@ impl CircuitTree {
         unimplemented!();
     }
 
-    pub fn get_node_names(&self) -> Vec<String> {
+    pub fn get_node_names(&self) -> HashSet<String> {
         self.names.keys().cloned().collect()
     }
 }

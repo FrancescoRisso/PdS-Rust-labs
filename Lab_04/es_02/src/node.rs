@@ -122,4 +122,12 @@ impl Node {
             _ => None,
         }
     }
+
+    pub fn encapsulate(self) -> NodeLink {
+        Some(Rc::new(RefCell::new(self)))
+    }
+
+    pub fn get_name(&self) -> String {
+        self.name.clone()
+    }
 }
