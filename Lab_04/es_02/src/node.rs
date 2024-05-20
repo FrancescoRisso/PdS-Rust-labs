@@ -76,20 +76,30 @@ impl Node {
     }
 
     // turn on or off the switch or the generator, if it's a light return an error
-    pub fn switch(&mut self) /*add return */
-    {
-        unimplemented!()
+    pub fn switch(&mut self) -> Result<(), String> {
+        match self.function {
+            NodeFunction::Generator(true) => self.function = NodeFunction::Generator(false),
+            NodeFunction::Generator(false) => self.function = NodeFunction::Generator(true),
+            NodeFunction::Switch(true) => self.function = NodeFunction::Switch(false),
+            NodeFunction::Switch(false) => self.function = NodeFunction::Switch(true),
+            NodeFunction::Light => return Err("Cannot switch a light".to_string()),
+        }
+
+        Ok(())
     }
 
     pub fn update_parent(&mut self, tree: CircuitTree) {
         _ = tree;
+        _ = self.outs;
         unimplemented!()
     }
 
     pub fn get_status(&mut self) -> Option<bool> {
-        _ = self.parent;
-        _ = self.outs;
-        unimplemented!()
+        match self.function {
+            NodeFunction::Generator(state) => Some(state),
+            NodeFunction::Switch(state) => Some(state),
+            NodeFunction::Light => None,
+        }
     }
 
     pub fn get_parent(&self) -> NodeLink {
