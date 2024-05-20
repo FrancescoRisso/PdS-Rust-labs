@@ -17,8 +17,7 @@ pub type NodeBackLink = Option<Weak<RefCell<Node>>>;
 pub struct Node {
     name: String,
     function: NodeFunction,
-    // which type for parent?
-    // PhantomData is just a placeholder to let it compile
+    parent_name: Option<String>,
     parent: NodeBackLink,
     outs: [NodeLink; 2],
 }
@@ -31,8 +30,28 @@ impl PartialEq for Node {
 
 impl From<&str> for Node {
     fn from(value: &str) -> Self {
-        _ = value;
-        unimplemented!()
+        let mut iter = value.split(" ");
+
+        let node_type = iter.next().unwrap_or("G");
+        let name = iter.next().unwrap_or("").to_string();
+        let parent = iter.next().unwrap_or("-").to_string();
+        let state_str = iter.next().unwrap_or("off");
+
+        let state_bool = match state_str {
+            "on" => true,
+            _ => false,
+        };
+
+        let function = match node_type {
+            "G" => NodeFunction::Generator(state_bool),
+            "S" => NodeFunction::Switch(state_bool),
+            _ => NodeFunction::Light,
+        };
+
+        let mut res = Node::without_links(name, function);
+        res.parent_name = Some(parent);
+
+        res
     }
 }
 
@@ -46,6 +65,7 @@ impl Node {
         Node {
             name,
             function,
+            parent_name: None,
             parent,
             outs,
         }
