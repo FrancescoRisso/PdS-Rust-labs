@@ -19,6 +19,12 @@ pub struct Node {
     outs: [NodeLink; 2],
 }
 
+impl From<&str> for Node {
+    fn from(value: &str) -> Self {
+        unimplemented!()
+    }
+}
+
 impl Node {
     // turn on or off the switch or the generator, if it's a light return an error
     pub fn switch(&mut self) /*add return */
