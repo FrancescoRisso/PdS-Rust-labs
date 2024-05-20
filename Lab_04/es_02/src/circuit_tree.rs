@@ -10,10 +10,7 @@ pub struct CircuitTree {
 
 impl From<&str> for CircuitTree {
     fn from(value: &str) -> Self {
-        let mut res = CircuitTree {
-            root: None,
-            names: HashMap::new(),
-        };
+        let mut res = CircuitTree::new();
 
         let mut first_line = true;
 
@@ -39,7 +36,10 @@ impl From<&str> for CircuitTree {
 
 impl CircuitTree {
     pub fn new() -> Self {
-        unimplemented!()
+        CircuitTree {
+            root: None,
+            names: HashMap::new(),
+        }
     }
 
     pub fn with_values(root: NodeLink, names: HashMap<String, NodeLink>) -> Self {
