@@ -230,6 +230,26 @@ mod create_tree {
     }
 
     #[test]
+    fn node_connected_to_parent() {
+        let tree: CircuitTree = "G g1 - off\nL l1 g1".into();
+
+        let root = tree.get("g1").unwrap();
+        let root = root.as_ref().borrow();
+
+        let root_out = root.get_out(0).unwrap();
+        let root_out = root_out.as_ref().borrow();
+
+        let fake_child = Node::new(
+            "l1".to_string(),
+            NodeFunction::Generator(false),
+            None,
+            [None, None],
+        );
+
+        assert_eq!(*root_out, fake_child);
+    }
+
+    #[test]
     fn add_root() {
         let mut tree = CircuitTree::new();
         let node = Node::without_links("test".to_string(), NodeFunction::Generator(false));
