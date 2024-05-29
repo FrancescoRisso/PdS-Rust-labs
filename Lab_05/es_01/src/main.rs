@@ -1,3 +1,5 @@
+use std::fmt::format;
+
 use clap::Parser;
 use itertools::{iproduct, Itertools};
 
@@ -21,16 +23,24 @@ fn main() {
     let all_possibilities: Vec<(Vec<u8>, Vec<char>)> =
         iproduct!(num_perm.into_iter(), ops.into_iter()).collect();
 
-    check_and_print(&all_possibilities[..])
+    let res = check_and_print(&all_possibilities[..]);
+    println!("{:?}", res);
 }
 
-fn check_and_print(vals: &[(Vec<u8>, Vec<char>)]) {
+fn check_and_print(vals: &[(Vec<u8>, Vec<char>)]) -> Vec<String> {
+    let mut result: Vec<String> = vec![];
+
     for val in vals {
-        _ = check_and_print_single(&val.0, &val.1);
+        match check_and_print_single(&val.0, &val.1) {
+            Err(_) => {}
+            Ok(res) => result.push(res),
+        }
     }
+
+    result
 }
 
-fn check_and_print_single(nums: &Vec<u8>, signs: &Vec<char>) -> Result<(), ()> {
+fn check_and_print_single(nums: &Vec<u8>, signs: &Vec<char>) -> Result<String, ()> {
     let mut nums_iter = nums.iter();
     let mut partial: isize = *nums_iter.next().unwrap() as isize;
 
@@ -56,12 +66,12 @@ fn check_and_print_single(nums: &Vec<u8>, signs: &Vec<char>) -> Result<(), ()> {
     }
 
     if partial == 10 {
-        print!("> {}", nums[0]);
+        let mut res = format!("{}", nums[0]);
         for i in 0..signs.len() {
-            print!(" {} {}", signs[i], nums[i + 1]);
+            res = format!("{}{}{}", res, signs[i], nums[i + 1]);
         }
-        println!("")
+        return Ok(format!("{}=10", res));
     }
 
-    return Ok(());
+    return Err(());
 }
