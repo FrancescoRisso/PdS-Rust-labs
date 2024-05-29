@@ -1,4 +1,4 @@
-use std::fmt::format;
+use std::collections::HashSet;
 
 use clap::Parser;
 use itertools::{iproduct, Itertools};
@@ -24,16 +24,19 @@ fn main() {
         iproduct!(num_perm.into_iter(), ops.into_iter()).collect();
 
     let res = check_and_print(&all_possibilities[..]);
+
     println!("{:?}", res);
 }
 
-fn check_and_print(vals: &[(Vec<u8>, Vec<char>)]) -> Vec<String> {
-    let mut result: Vec<String> = vec![];
+fn check_and_print(vals: &[(Vec<u8>, Vec<char>)]) -> HashSet<String> {
+    let mut result: HashSet<String> = HashSet::new();
 
     for val in vals {
         match check_and_print_single(&val.0, &val.1) {
             Err(_) => {}
-            Ok(res) => result.push(res),
+            Ok(res) => {
+                result.insert(res);
+            }
         }
     }
 
