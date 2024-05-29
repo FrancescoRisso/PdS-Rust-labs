@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::{collections::HashSet, sync::Mutex, time::Instant};
 
 use clap::Parser;
 use itertools::{iproduct, Itertools};
@@ -23,9 +23,37 @@ fn main() {
     let all_possibilities: Vec<(Vec<u8>, Vec<char>)> =
         iproduct!(num_perm.into_iter(), ops.into_iter()).collect();
 
+    let mut now = Instant::now();
     let res = check_and_print(&all_possibilities[..]);
+    println!("No thread took {:?}", now.elapsed());
 
-    println!("{:?}", res);
+    for num_threads in 1..10 {
+        let slice_len = all_possibilities.len() / num_threads;
+        let mut res_threads = HashSet::<String>::new();
+        let res_threads_mut = Mutex::new(&mut res_threads);
+
+        let mut slices = vec![];
+        for i in 0..num_threads {
+            slices.push(&all_possibilities[(i * slice_len)..((i + 1) * slice_len)]);
+        }
+
+        now = Instant::now();
+
+        std::thread::scope(|s| {
+            for slice in slices {
+                s.spawn(|| {
+                    let res_single = check_and_print(slice);
+                    res_threads_mut.lock().unwrap().extend(res_single);
+                });
+            }
+        });
+
+        print!("{} threads took {:?} ", num_threads, now.elapsed());
+        match res == res_threads {
+            true => println!("and provided a correct result"),
+            false => println!("but provided a wrong result"),
+        }
+    }
 }
 
 fn check_and_print(vals: &[(Vec<u8>, Vec<char>)]) -> HashSet<String> {
