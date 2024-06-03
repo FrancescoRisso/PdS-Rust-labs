@@ -1,5 +1,8 @@
 use std::ops::{Deref, Index, IndexMut};
 
+// Thread-safe circular buffer
+pub type TSCircularBuffer<T> = std::sync::Mutex<CircularBuffer<T>>;
+
 pub struct CircularBuffer<T>
 where
     T: Default + Copy,
@@ -74,7 +77,7 @@ where
     }
 
     // vedi sotto*
-    pub fn make_contiguos(&mut self) {
+    pub fn make_contiguous(&mut self) {
         if self.head == 0 {
             return;
         }
@@ -87,11 +90,15 @@ where
 
         self.head -= 1;
 
-        self.make_contiguos();
+        self.make_contiguous();
     }
 
     pub fn get_head(&self) -> usize {
         self.head
+    }
+
+    pub fn get_tail(&self) -> usize {
+        self.tail
     }
 }
 

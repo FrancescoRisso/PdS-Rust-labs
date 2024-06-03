@@ -1,182 +1,216 @@
-use es_03::CircularBuffer;
+use std::{thread, time};
+
+use es_02::{CircularBuffer, TSCircularBuffer};
 
 #[test]
-fn write_until_error() {
-    let mut buf: CircularBuffer<u32> = CircularBuffer::new(2);
-
-    let ins1 = buf.write(1);
-    let ins2 = buf.write(2);
-    let ins3 = buf.write(3);
-
-    assert!(ins1.is_ok());
-    assert!(ins2.is_ok());
-    assert!(ins3.is_err());
+fn insert_element_should_increment_buffer_size() {
+    let mut b = CircularBuffer::new(10);
+    let _ = b.write(3);
+    assert_eq!(b.size(), 1);
 }
 
 #[test]
-fn read_until_error() {
-    let mut buf: CircularBuffer<u32> = CircularBuffer::new(2);
-
-    let _ = buf.write(1);
-    let _ = buf.write(2);
-
-    assert_eq!(buf.read(), Some(1));
-    assert_eq!(buf.read(), Some(2));
-    assert_eq!(buf.read(), None);
+fn read_element_should_return_inserted_element() {
+    let item = 4;
+    let mut b = CircularBuffer::new(10);
+    let _ = b.write(item);
+    let read = b.read().unwrap();
+    assert_eq!(read, item);
 }
 
 #[test]
-fn write_and_clear() {
-    let mut buf: CircularBuffer<u32> = CircularBuffer::new(2);
-
-    let _ = buf.write(1);
-    let _ = buf.write(2);
-
-    buf.clear();
-
-    let ins1 = buf.write(1);
-    let ins2 = buf.write(2);
-    let ins3 = buf.write(3);
-
-    assert!(ins1.is_ok());
-    assert!(ins2.is_ok());
-    assert!(ins3.is_err());
+fn read_multiple_element_should_return_inserted_element_in_order() {
+    let i1 = 1;
+    let i2 = 2;
+    let i3 = 3;
+    let mut b = CircularBuffer::new(10);
+    let _ = b.write(i1);
+    let _ = b.write(i2);
+    let _ = b.write(i3);
+    let r1 = b.read().unwrap();
+    let r2 = b.read().unwrap();
+    let r3 = b.read().unwrap();
+    assert_eq!((i1, i2, i3), (r1, r2, r3));
 }
 
 #[test]
-fn read_with_clear() {
-    let mut buf: CircularBuffer<u32> = CircularBuffer::new(2);
-
-    let _ = buf.write(1);
-
-    buf.clear();
-
-    let _ = buf.write(2);
-
-    assert_eq!(buf.read(), Some(2));
-    assert_eq!(buf.read(), None);
+fn buffer_is_circular() {
+    let mut b = CircularBuffer::new(2);
+    let i = [1, 2, 3];
+    let mut r = vec![0; 3];
+    let _ = b.write(i[0]);
+    let _ = b.write(i[1]);
+    r[0] = b.read().unwrap();
+    let _ = b.write(i[2]);
+    r[1] = b.read().unwrap();
+    r[2] = b.read().unwrap();
+    assert_eq!(r, i);
 }
 
 #[test]
-fn get_size() {
-    let buf: CircularBuffer<u32> = CircularBuffer::new(2);
-    assert_eq!(buf.size(), 2)
+fn read_from_empty_buffer_should_return_none() {
+    let mut b: CircularBuffer<i32> = CircularBuffer::new(10);
+    assert_eq!(b.read(), None);
 }
 
 #[test]
-fn overwrite() {
-    let mut buf: CircularBuffer<u32> = CircularBuffer::new(2);
-
-    let _ = buf.write(1);
-    let _ = buf.write(2);
-    let _ = buf.overwrite(3);
-
-    assert_eq!(buf.read(), Some(2));
-    assert_eq!(buf.read(), Some(3));
+fn write_on_full_buffer_should_return_err() {
+    let mut b = CircularBuffer::new(1);
+    let _ = b.write(1);
+    let res = match b.write(2) {
+        Ok(_) => true,
+        Err(_) => false,
+    };
+    assert_eq!(res, false);
 }
 
 #[test]
-fn make_contiguos() {
-    let mut buf: CircularBuffer<u32> = CircularBuffer::new(3);
-
-    let _ = buf.write(1);
-    let _ = buf.write(2);
-    let _ = buf.write(3);
-
-    assert_eq!(buf.get_head(), 0);
-
-    assert_eq!(buf.read(), Some(1));
-    assert_eq!(buf.get_head(), 1);
-    let _ = buf.write(4);
-
-    assert_eq!(buf.read(), Some(2));
-    assert_eq!(buf.get_head(), 2);
-
-    buf.make_contiguos();
-
-    assert_eq!(buf.get_head(), 0);
-    assert_eq!(buf.read(), Some(3));
-    assert_eq!(buf.get_head(), 1);
-    assert_eq!(buf.read(), Some(4));
-    assert_eq!(buf.get_head(), 2);
+fn overwrite_should_act_as_write_if_not_full() {
+    let mut b = CircularBuffer::new(2);
+    b.overwrite(1);
+    assert_eq!(b.read().unwrap(), 1);
 }
 
 #[test]
-fn index() {
-    let mut buf: CircularBuffer<u32> = CircularBuffer::new(3);
+fn overwrite_should_replace_first_element_if_buffer_full() {
+    let mut b = CircularBuffer::new(2);
+    let i = [1, 2, 3];
+    let mut r = [0, 0];
+    let _ = b.write(i[0]);
+    let _ = b.write(i[1]);
+    b.overwrite(i[2]);
+    r[0] = b.read().unwrap();
+    r[1] = b.read().unwrap();
+    assert_eq!(r, i[1..=2]);
+}
 
-    let _ = buf.write(1);
-    let _ = buf.write(2);
-    let _ = buf.write(3);
-    buf.read();
+#[test]
+fn make_contigous_should_put_head_before_tail() {
+    let mut b = CircularBuffer::new(3);
+    let i = [1, 2, 3, 4];
+    let _ = b.write(i[0]);
+    let _ = b.write(i[1]);
+    let _ = b.write(i[2]);
+    let _ = b.read();
+    let _ = b.read();
+    let _ = b.write(i[3]);
+    b.make_contiguous();
+    assert_eq!((b.get_head(), b.get_tail()), (0, 2));
+}
 
-    let ptr1 = buf[0];
-    let ptr2 = buf[1];
+// threads
 
-    let pan = std::panic::catch_unwind(|| {
-        buf[2];
+#[test]
+fn ts_read_after_write_should_return_the_value() {
+    let b = TSCircularBuffer::new(CircularBuffer::new(3));
+    let item = 2;
+    let _ = b.lock().unwrap().write(item);
+    assert_eq!(b.lock().unwrap().read().unwrap(), item);
+}
+
+#[test]
+fn ts_avg_full() {
+    let b = TSCircularBuffer::new(CircularBuffer::new(3));
+
+    thread::scope(|s| {
+        s.spawn(|| {
+            for i in 0..10 {
+                let _ = b.lock().unwrap().write(i);
+                println!("W{:3}", i);
+                std::thread::sleep(time::Duration::from_secs(1));
+            }
+        });
+
+        s.spawn(|| {
+            let mut cnt = 0;
+            for _ in 0..5 {
+                match b.lock().unwrap().read() {
+                    Some(el) => {
+                        println!("      R{:3}", el);
+                        assert_eq!(el, cnt);
+                        cnt += 1;
+                    }
+                    None => println!("      R___"),
+                }
+                std::thread::sleep(time::Duration::from_secs(2));
+            }
+        });
     });
-
-    assert_eq!(ptr1, 2);
-    assert_eq!(ptr2, 3);
-    assert!(pan.is_err());
 }
 
 #[test]
-fn index_mut() {
-    let mut buf: CircularBuffer<u32> = CircularBuffer::new(3);
+fn ts_avg_empty() {
+    let b = TSCircularBuffer::new(CircularBuffer::new(3));
 
-    let _ = buf.write(1);
-    let _ = buf.write(2);
-    let _ = buf.write(3);
-    buf.read();
+    thread::scope(|s| {
+        s.spawn(|| {
+            for i in 0..5 {
+                let _ = b.lock().unwrap().write(i);
+                println!("W{:3}", i);
+                std::thread::sleep(time::Duration::from_secs(2));
+            }
+        });
 
-    buf[0] = 5;
-    buf[1] = 6;
-
-    let pan = std::panic::catch_unwind(|| {
-        buf[2];
+        s.spawn(|| {
+            let mut cnt = 0;
+            for _ in 0..5 {
+                match b.lock().unwrap().read() {
+                    Some(el) => {
+                        println!("      R{:3}", el);
+                        assert_eq!(el, cnt);
+                        cnt += 1;
+                    }
+                    None => println!("      R___"),
+                }
+                std::thread::sleep(time::Duration::from_secs(1));
+            }
+        });
     });
-
-    assert_eq!(buf.read(), Some(5));
-    assert_eq!(buf.read(), Some(6));
-    assert!(pan.is_err());
 }
 
 #[test]
-fn deref_ok() {
-    let mut buf: CircularBuffer<u32> = CircularBuffer::new(3);
+fn ts_throug() {
+    let b = TSCircularBuffer::new(CircularBuffer::new(1000));
 
-    let _ = buf.write(1);
-    let _ = buf.write(2);
+    thread::scope(|s| {
+        s.spawn(|| {
+            for i in 0..100000 {
+                let _ = b.lock().unwrap().write(i);
+                //println!("W{:3}", i);
+                std::thread::sleep(time::Duration::from_nanos(1));
+            }
+        });
 
-    let slice: &[u32] = &[1, 2];
-    let deref: &[u32] = &buf;
+        s.spawn(|| {
+            let mut cnt = 0;
+            let start = time::Instant::now();
+            for _ in 0..100000 {
+                match b.lock().unwrap().read() {
+                    Some(_) => {
+                        //println!("      R{:3}", el);
+                        cnt += 1;
+                    }
+                    None => (), //println!("      R___"),
+                }
+                std::thread::sleep(time::Duration::from_nanos(1));
+            }
+            println!("Cons1 Throughput: {}elm/{:.2?}", cnt, start.elapsed());
+        });
 
-    assert_eq!(deref, slice);
-}
-
-#[test]
-fn deref_borderline() {
-    let mut buf: CircularBuffer<u32> = CircularBuffer::new(2);
-
-    let _ = buf.write(1);
-    let _ = buf.write(2);
-
-    let slice: &[u32] = &[1, 2];
-    let deref: &[u32] = &buf;
-
-    assert_eq!(deref, slice);
-}
-
-#[test]
-#[should_panic]
-fn deref_non_contiguous() {
-    let mut buf: CircularBuffer<u32> = CircularBuffer::new(2);
-
-    let _ = buf.write(1);
-    let _ = buf.write(2);
-    let _ = buf.read();
-    let _ = buf.write(3);
-    let _deref: &[u32] = &buf;
+        s.spawn(|| {
+            let mut cnt = 0;
+            let start = time::Instant::now();
+            for _ in 0..100000 {
+                match b.lock().unwrap().read() {
+                    Some(_) => {
+                        //println!("      R{:3}", el);
+                        cnt += 1;
+                    }
+                    None => (), //println!("      R___"),
+                }
+                std::thread::sleep(time::Duration::from_nanos(1));
+            }
+            println!("Cons2 Throughput: {}elm/{:.2?}", cnt, start.elapsed());
+        });
+    });
 }
