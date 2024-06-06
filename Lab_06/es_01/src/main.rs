@@ -6,6 +6,7 @@ use cyclic_barrier::CyclicBarrier;
 fn main() {
     let cbarrrier = CyclicBarrier::new(3);
     let mut vt = Vec::new();
+
     for i in 0..3 {
         let waiter = cbarrrier.get_waiter();
         vt.push(std::thread::spawn(move || {
@@ -14,5 +15,9 @@ fn main() {
                 println!("after barrier {} {}", i, j);
             }
         }));
+    }
+
+    for handler in vt {
+        _ = handler.join();
     }
 }
