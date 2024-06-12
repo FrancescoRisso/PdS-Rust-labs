@@ -1,43 +1,31 @@
 mod semaphore;
-// mod thread_pool;
+mod thread_pool;
 
-use semaphore::Semaphore;
-use std::{sync::Arc, thread, time::Duration};
-// use thread_pool::ThreadPool;
-
-// fn main() {
-//     // alloca i worker
-//     let threadpool = ThreadPool::new(10);
-//     for x in 0..100 {
-//         threadpool.execute(Box::new(move || {
-//             println!("long running task {}", x);
-//             thread::sleep(Duration::from_millis(1000))
-//         }))
-//     }
-//     // just to keep the main thread alive
-//     loop {
-//         thread::sleep(Duration::from_millis(1000))
-//     }
-// }
+use std::{
+    sync::{Arc, Mutex},
+    thread,
+    time::Duration,
+};
+use thread_pool::ThreadPool;
 
 fn main() {
-    let sem = Arc::new(Semaphore::new(1));
-    let sem2 = sem.clone();
+    // alloca i worker
+    let threadpool = ThreadPool::new(10);
+    let total = Arc::new(Mutex::new(0));
 
-    let t1 = std::thread::spawn(move || {
-        for _ in 0..10 {
-            thread::sleep(Duration::from_millis(2000));
-            sem.signal();
-        }
-    });
-
-    let t2 = std::thread::spawn(move || {
-        for i in 0..10 {
-			sem2.wait();
-            println!("{i}");
-        }
-    });
-
-    _ = t1.join();
-    _ = t2.join();
+    for x in 0..100 {
+        let total = total.clone();
+        threadpool.execute(Box::new(move || {
+            {
+                let mut total = total.lock().unwrap();
+                *total += x;
+                println!("long running task {} (sum up to now: {})", x, total);
+            }
+            thread::sleep(Duration::from_millis(1000))
+        }))
+    }
+    // just to keep the main thread alive
+    loop {
+        thread::sleep(Duration::from_millis(1000))
+    }
 }
