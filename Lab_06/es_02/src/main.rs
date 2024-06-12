@@ -24,8 +24,6 @@ fn main() {
             thread::sleep(Duration::from_millis(1000))
         }))
     }
-    // just to keep the main thread alive
-    loop {
-        thread::sleep(Duration::from_millis(1000))
-    }
+
+    threadpool.stop();
 }
